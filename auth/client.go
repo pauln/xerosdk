@@ -63,7 +63,7 @@ func (c *Provider) Refresh(t *oauth2.Token) (*oauth2.Token, error) {
 }
 
 // Client method will build a new http.Client with the custom TokenRefresher
-func (c *Provider) Client(t *oauth2.Token, src *oauth2.TokenSource, repo Repository) *http.Client {
+func (c *Provider) Client(t *oauth2.Token, repo Repository) *http.Client {
 	return oauth2.NewClient(c.ctx, NewTokenRefresher(repo, t, c))
 }
 

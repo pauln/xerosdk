@@ -17,6 +17,8 @@ import (
 	"github.com/quickaco/xerosdk/accounting"
 	"github.com/quickaco/xerosdk/auth"
 	"github.com/quickaco/xerosdk/connection"
+
+	"github.com/joho/godotenv"
 )
 
 var (
@@ -25,6 +27,9 @@ var (
 )
 
 func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
 	config := auth.Config{
 		ClientID:     os.Getenv("CLIENT_ID"),
 		ClientSecret: os.Getenv("CLIENT_SECRET"),
@@ -89,7 +94,7 @@ func main() {
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	var t *template.Template
 	se, _ := repo.GetSession(uuid.Nil)
-	if se.AccessToken != "" {
+	if se != nil {
 		t, _ = template.New("foo").Parse(connectedTemplate)
 	} else {
 		t, _ = template.New("foo").Parse(indexTemplate)
@@ -113,7 +118,7 @@ func XeroAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 func XeroConnectionsHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
-	tenants, err := connection.GetTenants(c.NewClient(se))
+	tenants, err := connection.GetTenants(c.Client(se, repo))
 	if err != nil {
 		log.Panic(err)
 	}
@@ -122,7 +127,7 @@ func XeroConnectionsHandler(w http.ResponseWriter, r *http.Request) {
 
 func XeroContactsHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
-	cl := c.NewClient(se)
+	cl := c.Client(se, repo)
 
 	tenants, err := connection.GetTenants(cl)
 	if err != nil {
