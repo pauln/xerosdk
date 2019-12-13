@@ -52,6 +52,7 @@ func main() {
 	r.HandleFunc("/connections", XeroConnectionsHandler)
 	r.HandleFunc("/contacts", XeroContactsHandler)
 	r.HandleFunc("/contacts/create", XeroContactsCreateHandler)
+	r.HandleFunc("/invoices", XeroInvoicesHandler)
 	r.HandleFunc("/refresh", XeroRefreshTokenHandler)
 	http.Handle("/", r)
 
@@ -201,4 +202,29 @@ func XeroContactsCreateHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		http.Redirect(w, r, "/", http.StatusFound)
 	}
+}
+
+// XeroInvoicesHandler is the handler that will find all the invoices
+func XeroInvoicesHandler(w http.ResponseWriter, r *http.Request) {
+	invoices := []accounting.Invoice{}
+	se, _ := repo.GetSession(uuid.Nil)
+	cl := c.Client(se, repo)
+
+	tenants, err := connection.GetTenants(cl)
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		i, err := accounting.FindInvoices(cl, tenant.TenantID)
+		if err != nil {
+			log.Panic(err)
+		}
+		invoices = append(invoices, i.Invoices...)
+	}
+	t, _ := template.New("invoices").Parse(invoicesTemplate)
+	t.Execute(w, struct {
+		Invoices []accounting.Invoice
+	}{
+		Invoices: invoices,
+	})
 }
