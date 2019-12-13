@@ -17,4 +17,6 @@ var connectedTemplate = `<p>AccessToken: {{.AccessToken}}</p>
 var contactsTemplate = `
 {{range .Contacts}}
 	<p>--  Name:{{.Name}}  |  Email:{{.EmailAddress}}  |  ContactID:{{.ContactID}}</p>
-{{end}}`
+{{end}}
+
+<p><a href="/contacts/create">Create a dummy contact</p>`

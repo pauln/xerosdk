@@ -123,6 +123,8 @@ func XeroAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, token)
 }
 
+// XeroConnectionsHandler is the handler that will show all the granted access
+// tenants
 func XeroConnectionsHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
 	tenants, err := connection.GetTenants(c.Client(se, repo))
@@ -132,10 +134,12 @@ func XeroConnectionsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&tenants)
 }
 
+// XeroRefreshTokenHandler is the handler that will refresh the current token
+// an saved it as a current one
 func XeroRefreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
 	log.Printf("OLD TOKEN %+v", se)
-	newToken, err  := c.Refresh(se)
+	newToken, err := c.Refresh(se)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -143,6 +147,8 @@ func XeroRefreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 	repo.UpdateSession(uuid.Nil, newToken)
 }
 
+//XeroContactsHandler is the handler in where we will show all the existing contacts
+// with all the tenants connected
 func XeroContactsHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
 	cl := c.Client(se, repo)
@@ -161,12 +167,13 @@ func XeroContactsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	t, _ := template.New("contacts").Parse(contactsTemplate)
 	t.Execute(w, struct {
-		Contacts       []accounting.Contact
+		Contacts []accounting.Contact
 	}{
-		Contacts:       contacts,
+		Contacts: contacts,
 	})
 }
 
+// XeroContactsCreateHandler is the handler that will create a new dummy contact
 func XeroContactsCreateHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
 	cl := c.Client(se, repo)
@@ -174,9 +181,10 @@ func XeroContactsCreateHandler(w http.ResponseWriter, r *http.Request) {
 
 	contacts := accounting.Contacts{
 		Contacts: []accounting.Contact{accounting.Contact{
-			Name: "Test " + contactID.String(),
-			FirstName: "Test FirstName",
-			LastName: "Test LastName",
+			Name:         "Test " + contactID.String(),
+			FirstName:    "Test FirstName",
+			LastName:     "Test LastName",
+			EmailAddress: "Test Email " + contactID.String(),
 		},
 		},
 	}
