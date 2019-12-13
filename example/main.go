@@ -52,6 +52,7 @@ func main() {
 	r.HandleFunc("/connections", XeroConnectionsHandler)
 	r.HandleFunc("/contacts", XeroContactsHandler)
 	r.HandleFunc("/contacts/create", XeroContactsCreateHandler)
+	r.HandleFunc("/refresh", XeroRefreshTokenHandler)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -91,6 +92,8 @@ func main() {
 	os.Exit(0)
 }
 
+// HomeHandler will be the base handler in where we will show information about
+// token and different actions you can do
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	var t *template.Template
 	se, _ := repo.GetSession(uuid.Nil)
@@ -102,10 +105,14 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, se)
 }
 
+// StartXeroAuthHandler is the handler that will start the process of Auth with
+// the Xero platform
 func StartXeroAuthHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, c.GetAuthURL("uniq_state"), http.StatusFound)
 }
 
+// XeroAuthCallbackHandler is the handler in where we are going to receive a
+// successful callback with a code that can we use to get our user token
 func XeroAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 	token, err := c.GetTokenFromCode(r.FormValue("code"))
 	if err != nil {
@@ -125,47 +132,65 @@ func XeroConnectionsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&tenants)
 }
 
+func XeroRefreshTokenHandler(w http.ResponseWriter, r *http.Request) {
+	se, _ := repo.GetSession(uuid.Nil)
+	log.Printf("OLD TOKEN %+v", se)
+	newToken, err  := c.Refresh(se)
+	if err != nil {
+		log.Panic(err)
+	}
+	log.Printf("REFRESHED TOKEN %+v", newToken)
+	repo.UpdateSession(uuid.Nil, newToken)
+}
+
 func XeroContactsHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
 	cl := c.Client(se, repo)
+	contacts := []accounting.Contact{}
 
 	tenants, err := connection.GetTenants(cl)
 	if err != nil {
 		log.Panic(err)
 	}
-	contacts, err := accounting.FindContacts(cl, tenants[0].TenantID)
-	if err != nil {
-		log.Panic(err)
+	for _, tenant := range tenants {
+		c, err := accounting.FindContacts(cl, tenant.TenantID)
+		if err != nil {
+			log.Panic(err)
+		}
+		contacts = append(contacts, c.Contacts...)
 	}
-	contactsSecondTenant, err := accounting.FindContacts(cl, tenants[1].TenantID)
-	if err != nil {
-		log.Panic(err)
-	}
-	log.Println(tenants[0].TenantID, len(contacts.Contacts), tenants[1].TenantID, len(contactsSecondTenant.Contacts))
 	t, _ := template.New("contacts").Parse(contactsTemplate)
 	t.Execute(w, struct {
 		Contacts       []accounting.Contact
-		TenantOne      uuid.UUID
-		TenantTwo      uuid.UUID
-		ContactsSecond []accounting.Contact
 	}{
-		Contacts:       contacts.Contacts,
-		TenantOne:      tenants[0].TenantID,
-		TenantTwo:      tenants[1].TenantID,
-		ContactsSecond: contactsSecondTenant.Contacts,
+		Contacts:       contacts,
 	})
 }
 
 func XeroContactsCreateHandler(w http.ResponseWriter, r *http.Request) {
-	// se, _ := repo.GetSession(uuid.Nil)
-	// cl := c.NewClient(&se)
-	// contactID, _ := uuid.NewV4()
-	//
-	// contacts := accounting.Contacts{
-	// 	Contacts: []accounting.Contact{
-	// 		Name: "Test " + contactID.String(),
-	// 		FirstName: "Test FirstName",
-	// 		LastName: "Test LastName",
-	// 	}
-	// }
+	se, _ := repo.GetSession(uuid.Nil)
+	cl := c.Client(se, repo)
+	contactID, _ := uuid.NewV4()
+
+	contacts := accounting.Contacts{
+		Contacts: []accounting.Contact{accounting.Contact{
+			Name: "Test " + contactID.String(),
+			FirstName: "Test FirstName",
+			LastName: "Test LastName",
+		},
+		},
+	}
+
+	tenants, err := connection.GetTenants(cl)
+	if err != nil {
+		log.Panic(err)
+	}
+	// We asume we have at least one tenant connected
+	// TODO improve that to get this information from a form
+	_, err = contacts.Create(cl, tenants[0].TenantID)
+	if err != nil {
+		log.Panic(err)
+	} else {
+		http.Redirect(w, r, "/", http.StatusFound)
+	}
 }

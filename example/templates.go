@@ -11,13 +11,10 @@ var connectedTemplate = `<p>AccessToken: {{.AccessToken}}</p>
 <p>RefreshToken: {{.RefreshToken}}</p>
 <p>Expiry: {{.Expiry}}</p>
 <p><a href="/connections"/>Connections</p>
-<p><a href="/contacts"/>Contacts</p>`
+<p><a href="/contacts"/>Contacts</p>
+<p><a href="/refresh"/>Refresh</p>`
 
-var contactsTemplate = `<h1>Contacts from Tenant: {{.TenantOne}}</h1>
+var contactsTemplate = `
 {{range .Contacts}}
-	<p>--  Name:{{.Name}}  |  Email:{{.EmailAddress}}  |  ContactID:{{.ContactID}}</p>
-{{end}}
-<h1>Contacts from Tenant: {{.TenantTwo}}</h1>
-{{range .ContactsSecond}}
 	<p>--  Name:{{.Name}}  |  Email:{{.EmailAddress}}  |  ContactID:{{.ContactID}}</p>
 {{end}}`
