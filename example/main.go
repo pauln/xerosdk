@@ -128,7 +128,7 @@ func XeroAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 // tenants
 func XeroConnectionsHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
-	tenants, err := connection.GetTenants(c.Client(se, repo))
+	tenants, err := connection.GetTenants(c.Client(se, uuid.Nil, repo))
 	if err != nil {
 		log.Panic(err)
 	}
@@ -152,7 +152,7 @@ func XeroRefreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 // with all the tenants connected
 func XeroContactsHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
-	cl := c.Client(se, repo)
+	cl := c.Client(se, uuid.Nil, repo)
 	contacts := []accounting.Contact{}
 
 	tenants, err := connection.GetTenants(cl)
@@ -177,7 +177,7 @@ func XeroContactsHandler(w http.ResponseWriter, r *http.Request) {
 // XeroContactsCreateHandler is the handler that will create a new dummy contact
 func XeroContactsCreateHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
-	cl := c.Client(se, repo)
+	cl := c.Client(se, uuid.Nil, repo)
 	contactID, _ := uuid.NewV4()
 
 	contacts := accounting.Contacts{
@@ -208,7 +208,7 @@ func XeroContactsCreateHandler(w http.ResponseWriter, r *http.Request) {
 func XeroInvoicesHandler(w http.ResponseWriter, r *http.Request) {
 	invoices := []accounting.Invoice{}
 	se, _ := repo.GetSession(uuid.Nil)
-	cl := c.Client(se, repo)
+	cl := c.Client(se, uuid.Nil, repo)
 
 	tenants, err := connection.GetTenants(cl)
 	if err != nil {

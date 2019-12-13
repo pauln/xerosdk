@@ -18,14 +18,16 @@ type TokenRefresher struct {
 	repo     Repository
 	token    *oauth2.Token
 	provider *Provider
+	userID   uuid.UUID
 }
 
 // NewTokenRefresher function will build a new TokenSource based on a given token
 // and a given repository
-func NewTokenRefresher(repo Repository, token *oauth2.Token, provider *Provider) oauth2.TokenSource {
+func NewTokenRefresher(repo Repository, token *oauth2.Token, provider *Provider, userID uuid.UUID) oauth2.TokenSource {
 	return &TokenRefresher{
 		repo:     repo,
 		token:    token,
+		userID:   userID,
 		provider: provider,
 	}
 }
@@ -38,7 +40,7 @@ func (t *TokenRefresher) Token() (*oauth2.Token, error) {
 		if err != nil {
 			return nil, err
 		}
-		if err = t.repo.UpdateSession(uuid.Nil, t.token); err != nil {
+		if err = t.repo.UpdateSession(t.userID, t.token); err != nil {
 			return nil, err
 		}
 		return token, nil
