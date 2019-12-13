@@ -1,5 +1,19 @@
 package accounting
 
+import (
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+
+	"github.com/gofrs/uuid"
+	"github.com/quickaco/xerosdk/helpers"
+)
+
+const (
+	invoiceURL = "https://api.xero.com/api.xro/2.0/Invoices"
+)
+
 //Invoice is an Accounts Payable or Accounts Recievable document in a Xero organisation
 type Invoice struct {
 	// See Invoice Types
@@ -99,4 +113,130 @@ type Invoice struct {
 //Invoices contains a collection of Invoices
 type Invoices struct {
 	Invoices []Invoice `json:"Invoices" xml:"Invoice"`
+}
+
+//The Xero API returns Dates based on the .Net JSON date format available at the time of development
+//We need to convert these to a more usable format - RFC3339 for consistency with what the API expects to recieve
+func (i *Invoices) convertDates() error {
+	var err error
+	for n := len(i.Invoices) - 1; n >= 0; n-- {
+		i.Invoices[n].UpdatedDateUTC, err = helpers.DotNetJSONTimeToRFC3339(i.Invoices[n].UpdatedDateUTC, true)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func unmarshalInvoice(invoiceResponseBytes []byte) (*Invoices, error) {
+	var invoiceResponse *Invoices
+	err := json.Unmarshal(invoiceResponseBytes, &invoiceResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	err = invoiceResponse.convertDates()
+	if err != nil {
+		return nil, err
+	}
+
+	return invoiceResponse, err
+}
+
+// FindInvoices function will return the list of all the invoices tied to this
+// tenantID
+func FindInvoices(cl *http.Client, tenantID, invoiceID uuid.UUID) (*Invoices, error) {
+	request, err := http.NewRequest(http.MethodGet, invoiceURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Add("Accept", "application/json")
+	request.Header.Add("xero-tenant-id", tenantID.String())
+
+	response, err := cl.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	invoiceResponseBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	return unmarshalInvoice(invoiceResponseBytes)
+}
+
+// FindInvoice function will return the invoice with the given criteria
+func FindInvoice(cl *http.Client, tenantID, invoiceID uuid.UUID) (*Invoices, error) {
+	request, err := http.NewRequest(http.MethodGet, invoiceURL+"/"+invoiceID.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Add("Accept", "application/json")
+	request.Header.Add("xero-tenant-id", tenantID.String())
+
+	response, err := cl.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	invoiceResponseBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	return unmarshalInvoice(invoiceResponseBytes)
+}
+
+// Create method will create a new invoice with the information given
+func (i *Invoices) Create(cl *http.Client, tenantID uuid.UUID) (*Invoices, error) {
+	buf, err := json.Marshal(i)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(http.MethodPost, invoiceURL, bytes.NewReader(buf))
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("xero-tenant-id", tenantID.String())
+
+	response, err := cl.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	invoiceResponseBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	return unmarshalInvoice(invoiceResponseBytes)
+}
+
+// Update will update the information with the given invoice
+func (i *Invoice) Update(cl *http.Client, tenantID uuid.UUID) (*Invoices, error) {
+	buf, err := json.Marshal(i)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(http.MethodPut, invoiceURL+"/"+i.InvoiceID, bytes.NewReader(buf))
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("xero-tenant-id", tenantID.String())
+
+	response, err := cl.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	invoiceResponseBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	return unmarshalInvoice(invoiceResponseBytes)
 }
