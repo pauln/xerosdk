@@ -35,3 +35,7 @@ $ go run *.go
 ```
 
 Now open up your browser and go to [http://localhost:3000](http://localhost:3000) to see the example.
+
+### How to Contribute
+
+Make a pull request...

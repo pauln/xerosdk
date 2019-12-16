@@ -40,7 +40,7 @@ func (t *TokenRefresher) Token() (*oauth2.Token, error) {
 		if err != nil {
 			return nil, err
 		}
-		if err = t.repo.UpdateSession(t.userID, t.token); err != nil {
+		if err = t.repo.UpdateSession(t.userID, token); err != nil {
 			return nil, err
 		}
 		return token, nil
