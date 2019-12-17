@@ -191,6 +191,35 @@ func FindContacts(cl *http.Client, tenantID uuid.UUID) (*Contacts, error) {
 	return unmarshalContact(contactResponseBytes)
 }
 
+// FindContact will find the contact info with the given contactID
+func FindContact(cl *http.Client, contactID, tenantID uuid.UUID) (*Contact, error) {
+	request, err := http.NewRequest(http.MethodGet, contactsURL+"/"+contactID.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Add("Accept", "application/json")
+	request.Header.Add("xero-tenant-id", tenantID.String())
+
+	response, err := cl.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	contactResponseBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	c, err := unmarshalContact(contactResponseBytes)
+	if err != nil {
+		return nil, err
+	}
+	if len(c.Contacts) > 0 {
+		return &c.Contacts[0], nil
+	}
+	return nil, nil
+}
+
 // Create will create contacts with the given information
 func (c *Contacts) Create(cl *http.Client, tenantID uuid.UUID) (*Contacts, error) {
 	buf, err := json.Marshal(c)
