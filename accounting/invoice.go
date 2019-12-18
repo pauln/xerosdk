@@ -168,7 +168,7 @@ func FindInvoices(cl *http.Client, tenantID uuid.UUID) (*Invoices, error) {
 }
 
 // FindInvoice function will return the invoice with the given criteria
-func FindInvoice(cl *http.Client, tenantID, invoiceID uuid.UUID) (*Invoices, error) {
+func FindInvoice(cl *http.Client, tenantID, invoiceID uuid.UUID) (*Invoice, error) {
 	request, err := http.NewRequest(http.MethodGet, invoiceURL+"/"+invoiceID.String(), nil)
 	if err != nil {
 		return nil, err
@@ -186,7 +186,14 @@ func FindInvoice(cl *http.Client, tenantID, invoiceID uuid.UUID) (*Invoices, err
 	if err != nil {
 		return nil, err
 	}
-	return unmarshalInvoice(invoiceResponseBytes)
+	i, err := unmarshalInvoice(invoiceResponseBytes)
+	if err != nil {
+		return nil, err
+	}
+	if len(i.Invoices) > 0 {
+		return &i.Invoices[0], nil
+	}
+	return nil, nil
 }
 
 // Create method will create a new invoice with the information given
