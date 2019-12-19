@@ -18,7 +18,16 @@ var connectedTemplate = `<p>AccessToken: {{.AccessToken}}</p>
 
 var contactsTemplate = `
 {{range .Contacts}}
-	<p>--  Name:{{.Name}}  |  Email:{{.EmailAddress}}  |  ContactID:{{.ContactID}}</p>
+	<p>--  <b>ContactID:</b>{{.ContactID}}  |  <b>ContactNumber:</b>{{.ContactNumber}}  |  <b>AccountNumber:</b>{{.AccountNumber}}</p>
+	<p>--  <b>ContactStatus:</b>{{.ContactStatus}}  |  <b>Name:</b>{{.Name}}  |  <b>FirstName:</b>{{.FirstName}}</p>
+	<p>--  <b>LastName:</b>{{.LastName}}  |  <b>EmailAddress:</b>{{.EmailAddress}}  |  <b>SkypeUserName:</b>{{.SkypeUserName}}</p>
+	<p>--  <b>ContactPersons:</b>{{.ContactPersons}}  |  <b>ContactNumber:</b>{{.ContactNumber}}  |  <b>AccountNumber:</b>{{.AccountNumber}}</p>
+	<p>--  <b>BankAccountDetails:</b>{{.BankAccountDetails}}  |  <b>TaxNumber:</b>{{.TaxNumber}}  |  <b>AccountsReceivableTaxType:</b>{{.AccountsReceivableTaxType}}</p>
+	<p>--  <b>AccountsPayableTaxType:</b>{{.AccountsPayableTaxType}}  |  <b>Addresses:</b>{{.Addresses}}  |  <b>Phones:</b>{{.Phones}}</p>
+	<p>--  <b>IsSupplier:</b>{{.IsSupplier}}  |  <b>IsCustomer:</b>{{.IsCustomer}}  |  <b>DefaultCurrency:</b>{{.DefaultCurrency}}</p>
+	<p>--  <b>XeroNetworkKey:</b>{{.XeroNetworkKey}}  |  <b>SalesDefaultAccountCode:</b>{{.SalesDefaultAccountCode}}  |  <b>PurchasesDefaultAccountCode:</b>{{.PurchasesDefaultAccountCode}}</p>
+	<p>--  <b>SalesTrackingCategories:</b>{{.SalesTrackingCategories}}  |  <b>PurchasesTrackingCategories:</b>{{.PurchasesTrackingCategories}}  |  <b>TrackingCategoryName:</b>{{.TrackingCategoryName}}</p>
+	<p>--  <b>TrackingCategoryOption:</b>{{.TrackingCategoryOption}}  |  <b>UpdatedDateUTC:</b>{{.UpdatedDateUTC}}  |  <b>ContactGroups:</b>{{.ContactGroups}}</p>
 {{end}}
 
 <p><a href="/contacts/create">Create a dummy contact</p>`
