@@ -54,6 +54,7 @@ func main() {
 	r.HandleFunc("/contacts/create", XeroContactsCreateHandler)
 	r.HandleFunc("/invoices", XeroInvoicesHandler)
 	r.HandleFunc("/refresh", XeroRefreshTokenHandler)
+	r.HandleFunc("/organisations", XeroOrganisationsHandler)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -139,12 +140,10 @@ func XeroConnectionsHandler(w http.ResponseWriter, r *http.Request) {
 // an saved it as a current one
 func XeroRefreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
-	log.Printf("OLD TOKEN %+v", se)
 	newToken, err := c.Refresh(se)
 	if err != nil {
 		log.Panic(err)
 	}
-	log.Printf("REFRESHED TOKEN %+v", newToken)
 	repo.UpdateSession(uuid.Nil, newToken)
 }
 
@@ -226,5 +225,31 @@ func XeroInvoicesHandler(w http.ResponseWriter, r *http.Request) {
 		Invoices []accounting.Invoice
 	}{
 		Invoices: invoices,
+	})
+}
+
+// XeroOrganisationsHandler handler will ask for all the organisations linked
+// to the given user and print out in a template
+func XeroOrganisationsHandler(w http.ResponseWriter, r *http.Request) {
+	organisations := []accounting.Organisation{}
+	se, _ := repo.GetSession(uuid.Nil)
+	cl := c.Client(se, uuid.Nil, repo)
+
+	tenants, err := connection.GetTenants(cl)
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		orgs, err := accounting.FindOrganisations(cl, tenant.TenantID)
+		if err != nil {
+			log.Panic(err)
+		}
+		organisations = append(organisations, orgs.Organisations...)
+	}
+	t, _ := template.New("organisations").Parse(organisationsTemplate)
+	t.Execute(w, struct {
+		Organisations []accounting.Organisation
+	}{
+		Organisations: organisations,
 	})
 }
