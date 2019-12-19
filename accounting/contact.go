@@ -176,7 +176,7 @@ func FindContacts(cl *http.Client, tenantID uuid.UUID) (*Contacts, error) {
 		return nil, err
 	}
 	request.Header.Add("Accept", "application/json")
-	request.Header.Add("xero-tenant-id", tenantID.String())
+	// request.Header.Add("xero-tenant-id", tenantID.String())
 
 	response, err := cl.Do(request)
 	if err != nil {

@@ -159,7 +159,7 @@ func XeroContactsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Panic(err)
 	}
 	for _, tenant := range tenants {
-		c, err := accounting.FindContacts(cl, tenant.TenantID)
+		c, err := accounting.FindContacts(c.NewXeroClient(se, uuid.Nil, tenant.TenantID, repo), uuid.Nil)
 		if err != nil {
 			log.Panic(err)
 		}

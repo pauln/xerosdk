@@ -11,6 +11,8 @@ import (
 const (
 	authURL  = "https://login.xero.com/identity/connect/authorize"
 	tokenURL = "https://identity.xero.com/connect/token"
+
+	tenantIDHeader = "xero-tenant-id"
 )
 
 // Config keeps the information needed for do an OAuth2 connection
@@ -46,6 +48,26 @@ func NewProvider(c Config) *Provider {
 	}
 }
 
+type XeroTransport struct {
+	T        http.RoundTripper
+	TenantID uuid.UUID
+}
+
+func (xt *XeroTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.Header.Add(tenantIDHeader, xt.TenantID.String())
+	return xt.T.RoundTrip(req)
+}
+
+func NewXeroTransport(T http.RoundTripper, tenantID uuid.UUID) *XeroTransport {
+	if T == nil {
+		T = http.DefaultTransport
+	}
+	return &XeroTransport{
+		T:        T,
+		TenantID: tenantID,
+	}
+}
+
 // GetAuthURL method will return the url for redirect and start the OAuth2
 // process
 func (c *Provider) GetAuthURL(state string) string {
@@ -66,6 +88,15 @@ func (c *Provider) Refresh(t *oauth2.Token) (*oauth2.Token, error) {
 // Client method will build a new http.Client with the custom TokenRefresher
 func (c *Provider) Client(t *oauth2.Token, userID uuid.UUID, repo Repository) *http.Client {
 	return oauth2.NewClient(c.ctx, NewTokenRefresher(repo, t, c, userID))
+}
+
+func (c *Provider) NewXeroClient(t *oauth2.Token, userID, tenantID uuid.UUID, repo Repository) *http.Client {
+	return &http.Client{
+		Transport: &oauth2.Transport{
+			Base:   NewXeroTransport(nil, tenantID),
+			Source: oauth2.ReuseTokenSource(nil, NewTokenRefresher(repo, t, c, userID)),
+		},
+	}
 }
 
 // NewClient method will return a new http.Client for use in our calls, using
