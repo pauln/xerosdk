@@ -170,13 +170,12 @@ func unmarshalContact(contactResponseBytes []byte) (*Contacts, error) {
 
 // FindContacts will get all the contacts from Xero linked with the given
 // tenantID
-func FindContacts(cl *http.Client, tenantID uuid.UUID) (*Contacts, error) {
+func FindContacts(cl *http.Client) (*Contacts, error) {
 	request, err := http.NewRequest(http.MethodGet, contactsURL, nil)
 	if err != nil {
 		return nil, err
 	}
 	request.Header.Add("Accept", "application/json")
-	// request.Header.Add("xero-tenant-id", tenantID.String())
 
 	response, err := cl.Do(request)
 	if err != nil {
@@ -192,13 +191,12 @@ func FindContacts(cl *http.Client, tenantID uuid.UUID) (*Contacts, error) {
 }
 
 // FindContact will find the contact info with the given contactID
-func FindContact(cl *http.Client, contactID, tenantID uuid.UUID) (*Contact, error) {
+func FindContact(cl *http.Client, contactID uuid.UUID) (*Contact, error) {
 	request, err := http.NewRequest(http.MethodGet, contactsURL+"/"+contactID.String(), nil)
 	if err != nil {
 		return nil, err
 	}
 	request.Header.Add("Accept", "application/json")
-	request.Header.Add("xero-tenant-id", tenantID.String())
 
 	response, err := cl.Do(request)
 	if err != nil {
@@ -221,7 +219,7 @@ func FindContact(cl *http.Client, contactID, tenantID uuid.UUID) (*Contact, erro
 }
 
 // Create will create contacts with the given information
-func (c *Contacts) Create(cl *http.Client, tenantID uuid.UUID) (*Contacts, error) {
+func (c *Contacts) Create(cl *http.Client) (*Contacts, error) {
 	buf, err := json.Marshal(c)
 	if err != nil {
 		return nil, err
@@ -231,7 +229,6 @@ func (c *Contacts) Create(cl *http.Client, tenantID uuid.UUID) (*Contacts, error
 		return nil, err
 	}
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("xero-tenant-id", tenantID.String())
 
 	response, err := cl.Do(request)
 	if err != nil {
@@ -247,7 +244,7 @@ func (c *Contacts) Create(cl *http.Client, tenantID uuid.UUID) (*Contacts, error
 }
 
 // Update will update the contact with the given criteria
-func (c *Contact) Update(cl *http.Client, tenantID uuid.UUID) (*Contacts, error) {
+func (c *Contact) Update(cl *http.Client) (*Contacts, error) {
 	buf, err := json.Marshal(c)
 	if err != nil {
 		return nil, err
@@ -257,7 +254,6 @@ func (c *Contact) Update(cl *http.Client, tenantID uuid.UUID) (*Contacts, error)
 		return nil, err
 	}
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("xero-tenant-id", tenantID.String())
 
 	response, err := cl.Do(request)
 	if err != nil {

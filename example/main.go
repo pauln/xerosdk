@@ -129,7 +129,12 @@ func XeroAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 // tenants
 func XeroConnectionsHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
-	tenants, err := connection.GetTenants(c.Client(se, uuid.Nil, repo))
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:    se,
+		UserID:   uuid.Nil,
+		TenantID: uuid.Nil,
+		Repo:     repo,
+	}))
 	if err != nil {
 		log.Panic(err)
 	}
@@ -145,13 +150,19 @@ func XeroRefreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 		log.Panic(err)
 	}
 	repo.UpdateSession(uuid.Nil, newToken)
+	http.Redirect(w, r, "/", http.StatusFound)
 }
 
 //XeroContactsHandler is the handler in where we will show all the existing contacts
 // with all the tenants connected
 func XeroContactsHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
-	cl := c.Client(se, uuid.Nil, repo)
+	cl := c.Client(&auth.Session{
+		Token:    se,
+		UserID:   uuid.Nil,
+		TenantID: uuid.Nil,
+		Repo:     repo,
+	})
 	contacts := []accounting.Contact{}
 
 	tenants, err := connection.GetTenants(cl)
@@ -159,7 +170,12 @@ func XeroContactsHandler(w http.ResponseWriter, r *http.Request) {
 		log.Panic(err)
 	}
 	for _, tenant := range tenants {
-		c, err := accounting.FindContacts(c.NewXeroClient(se, uuid.Nil, tenant.TenantID, repo), uuid.Nil)
+		c, err := accounting.FindContacts(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}))
 		if err != nil {
 			log.Panic(err)
 		}
@@ -176,7 +192,6 @@ func XeroContactsHandler(w http.ResponseWriter, r *http.Request) {
 // XeroContactsCreateHandler is the handler that will create a new dummy contact
 func XeroContactsCreateHandler(w http.ResponseWriter, r *http.Request) {
 	se, _ := repo.GetSession(uuid.Nil)
-	cl := c.Client(se, uuid.Nil, repo)
 	contactID, _ := uuid.NewV4()
 
 	contacts := accounting.Contacts{
@@ -189,13 +204,22 @@ func XeroContactsCreateHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	tenants, err := connection.GetTenants(cl)
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
 	if err != nil {
 		log.Panic(err)
 	}
 	// We asume we have at least one tenant connected
 	// TODO improve that to get this information from a form
-	_, err = contacts.Create(cl, tenants[0].TenantID)
+	_, err = contacts.Create(c.Client(&auth.Session{
+		Token:    se,
+		UserID:   uuid.Nil,
+		TenantID: tenants[0].TenantID,
+		Repo:     repo,
+	}))
 	if err != nil {
 		log.Panic(err)
 	} else {
@@ -207,14 +231,22 @@ func XeroContactsCreateHandler(w http.ResponseWriter, r *http.Request) {
 func XeroInvoicesHandler(w http.ResponseWriter, r *http.Request) {
 	invoices := []accounting.Invoice{}
 	se, _ := repo.GetSession(uuid.Nil)
-	cl := c.Client(se, uuid.Nil, repo)
 
-	tenants, err := connection.GetTenants(cl)
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
 	if err != nil {
 		log.Panic(err)
 	}
 	for _, tenant := range tenants {
-		i, err := accounting.FindInvoices(cl, tenant.TenantID)
+		i, err := accounting.FindInvoices(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}))
 		if err != nil {
 			log.Panic(err)
 		}
@@ -233,14 +265,22 @@ func XeroInvoicesHandler(w http.ResponseWriter, r *http.Request) {
 func XeroOrganisationsHandler(w http.ResponseWriter, r *http.Request) {
 	organisations := []accounting.Organisation{}
 	se, _ := repo.GetSession(uuid.Nil)
-	cl := c.Client(se, uuid.Nil, repo)
 
-	tenants, err := connection.GetTenants(cl)
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
 	if err != nil {
 		log.Panic(err)
 	}
 	for _, tenant := range tenants {
-		orgs, err := accounting.FindOrganisations(cl, tenant.TenantID)
+		orgs, err := accounting.FindOrganisations(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}))
 		if err != nil {
 			log.Panic(err)
 		}

@@ -146,13 +146,12 @@ func unmarshalInvoice(invoiceResponseBytes []byte) (*Invoices, error) {
 
 // FindInvoices function will return the list of all the invoices tied to this
 // tenantID
-func FindInvoices(cl *http.Client, tenantID uuid.UUID) (*Invoices, error) {
+func FindInvoices(cl *http.Client) (*Invoices, error) {
 	request, err := http.NewRequest(http.MethodGet, invoiceURL, nil)
 	if err != nil {
 		return nil, err
 	}
 	request.Header.Add("Accept", "application/json")
-	request.Header.Add("xero-tenant-id", tenantID.String())
 
 	response, err := cl.Do(request)
 	if err != nil {
@@ -168,13 +167,12 @@ func FindInvoices(cl *http.Client, tenantID uuid.UUID) (*Invoices, error) {
 }
 
 // FindInvoice function will return the invoice with the given criteria
-func FindInvoice(cl *http.Client, tenantID, invoiceID uuid.UUID) (*Invoice, error) {
+func FindInvoice(cl *http.Client, invoiceID uuid.UUID) (*Invoice, error) {
 	request, err := http.NewRequest(http.MethodGet, invoiceURL+"/"+invoiceID.String(), nil)
 	if err != nil {
 		return nil, err
 	}
 	request.Header.Add("Accept", "application/json")
-	request.Header.Add("xero-tenant-id", tenantID.String())
 
 	response, err := cl.Do(request)
 	if err != nil {
@@ -197,7 +195,7 @@ func FindInvoice(cl *http.Client, tenantID, invoiceID uuid.UUID) (*Invoice, erro
 }
 
 // Create method will create a new invoice with the information given
-func (i *Invoices) Create(cl *http.Client, tenantID uuid.UUID) (*Invoices, error) {
+func (i *Invoices) Create(cl *http.Client) (*Invoices, error) {
 	buf, err := json.Marshal(i)
 	if err != nil {
 		return nil, err
@@ -207,7 +205,6 @@ func (i *Invoices) Create(cl *http.Client, tenantID uuid.UUID) (*Invoices, error
 		return nil, err
 	}
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("xero-tenant-id", tenantID.String())
 
 	response, err := cl.Do(request)
 	if err != nil {
@@ -223,7 +220,7 @@ func (i *Invoices) Create(cl *http.Client, tenantID uuid.UUID) (*Invoices, error
 }
 
 // Update will update the information with the given invoice
-func (i *Invoice) Update(cl *http.Client, tenantID uuid.UUID) (*Invoices, error) {
+func (i *Invoice) Update(cl *http.Client) (*Invoices, error) {
 	buf, err := json.Marshal(i)
 	if err != nil {
 		return nil, err
@@ -233,7 +230,6 @@ func (i *Invoice) Update(cl *http.Client, tenantID uuid.UUID) (*Invoices, error)
 		return nil, err
 	}
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("xero-tenant-id", tenantID.String())
 
 	response, err := cl.Do(request)
 	if err != nil {

@@ -48,24 +48,34 @@ func NewProvider(c Config) *Provider {
 	}
 }
 
+// XeroTransport represents the information needed for custom Xero transport
 type XeroTransport struct {
 	T        http.RoundTripper
 	TenantID uuid.UUID
 }
 
+// RoundTrip method will add on each request the custom header for inform the
+// tenantID
 func (xt *XeroTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req.Header.Add(tenantIDHeader, xt.TenantID.String())
 	return xt.T.RoundTrip(req)
 }
 
-func NewXeroTransport(T http.RoundTripper, tenantID uuid.UUID) *XeroTransport {
-	if T == nil {
-		T = http.DefaultTransport
-	}
+// NewXeroTransport will build a new XeroTransport based on the given Tenant
+func NewXeroTransport(tenantID uuid.UUID) *XeroTransport {
 	return &XeroTransport{
-		T:        T,
+		T:        http.DefaultTransport,
 		TenantID: tenantID,
 	}
+}
+
+// Session type represents the information for each session using for connect
+// to Xero
+type Session struct {
+	Token    *oauth2.Token
+	UserID   uuid.UUID
+	TenantID uuid.UUID
+	Repo     Repository
 }
 
 // GetAuthURL method will return the url for redirect and start the OAuth2
@@ -85,16 +95,12 @@ func (c *Provider) Refresh(t *oauth2.Token) (*oauth2.Token, error) {
 	return c.conf.TokenSource(c.ctx, t).Token()
 }
 
-// Client method will build a new http.Client with the custom TokenRefresher
-func (c *Provider) Client(t *oauth2.Token, userID uuid.UUID, repo Repository) *http.Client {
-	return oauth2.NewClient(c.ctx, NewTokenRefresher(repo, t, c, userID))
-}
-
-func (c *Provider) NewXeroClient(t *oauth2.Token, userID, tenantID uuid.UUID, repo Repository) *http.Client {
+// Client will build a custom http.Client for Xero
+func (c *Provider) Client(s *Session) *http.Client {
 	return &http.Client{
 		Transport: &oauth2.Transport{
-			Base:   NewXeroTransport(nil, tenantID),
-			Source: oauth2.ReuseTokenSource(nil, NewTokenRefresher(repo, t, c, userID)),
+			Base:   NewXeroTransport(s.TenantID),
+			Source: oauth2.ReuseTokenSource(nil, NewTokenRefresher(s.Repo, s.Token, c, s.UserID)),
 		},
 	}
 }

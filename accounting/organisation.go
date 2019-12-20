@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gofrs/uuid"
 	"github.com/quickaco/xerosdk/helpers"
 )
 
@@ -109,13 +108,12 @@ type OrganisationCollection struct {
 }
 
 // FindOrganisations will get all the organisation linked to the given tenantID
-func FindOrganisations(cl *http.Client, tenantID uuid.UUID) (org *OrganisationCollection, err error) {
+func FindOrganisations(cl *http.Client) (org *OrganisationCollection, err error) {
 	request, err := http.NewRequest(http.MethodGet, organisationURL, nil)
 	if err != nil {
 		return nil, err
 	}
 	request.Header.Add("Accept", "application/json")
-	request.Header.Add("xero-tenant-id", tenantID.String())
 
 	response, err := cl.Do(request)
 	if err != nil {
