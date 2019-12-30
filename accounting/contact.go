@@ -245,7 +245,10 @@ func (c *Contacts) Create(cl *http.Client) (*Contacts, error) {
 
 // Update will update the contact with the given criteria
 func (c *Contact) Update(cl *http.Client) (*Contacts, error) {
-	buf, err := json.Marshal(c)
+	cn := Contacts{
+		Contacts: []Contact{*c},
+	}
+	buf, err := json.Marshal(cn)
 	if err != nil {
 		return nil, err
 	}
