@@ -54,9 +54,8 @@ func DotNetJSONTimeToRFC3339(jsonTime string, isUTC bool) (string, error) {
 	//will remove the Z from local times so they aren't seen as UTC times.
 	if isUTC {
 		return formattedTime, nil
-	} else {
-		return strings.TrimSuffix(formattedTime, "Z"), nil
 	}
+	return strings.TrimSuffix(formattedTime, "Z"), nil
 }
 
 func getTimestampAndOffset(regex *regexp.Regexp, timeString string) (int64, int64, error) {

@@ -1,9 +1,7 @@
 package accounting
 
 import (
-	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/gofrs/uuid"
@@ -147,19 +145,7 @@ func unmarshalInvoice(invoiceResponseBytes []byte) (*Invoices, error) {
 // FindInvoices function will return the list of all the invoices tied to this
 // tenantID
 func FindInvoices(cl *http.Client) (*Invoices, error) {
-	request, err := http.NewRequest(http.MethodGet, invoiceURL, nil)
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Add("Accept", "application/json")
-
-	response, err := cl.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	invoiceResponseBytes, err := ioutil.ReadAll(response.Body)
+	invoiceResponseBytes, err := helpers.Find(cl, invoiceURL)
 	if err != nil {
 		return nil, err
 	}
@@ -168,19 +154,7 @@ func FindInvoices(cl *http.Client) (*Invoices, error) {
 
 // FindInvoice function will return the invoice with the given criteria
 func FindInvoice(cl *http.Client, invoiceID uuid.UUID) (*Invoice, error) {
-	request, err := http.NewRequest(http.MethodGet, invoiceURL+"/"+invoiceID.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Add("Accept", "application/json")
-
-	response, err := cl.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	invoiceResponseBytes, err := ioutil.ReadAll(response.Body)
+	invoiceResponseBytes, err := helpers.Find(cl, invoiceURL+"/"+invoiceID.String())
 	if err != nil {
 		return nil, err
 	}
@@ -200,19 +174,7 @@ func (i *Invoices) Create(cl *http.Client) (*Invoices, error) {
 	if err != nil {
 		return nil, err
 	}
-	request, err := http.NewRequest(http.MethodPost, invoiceURL, bytes.NewReader(buf))
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Add("Content-Type", "application/json")
-
-	response, err := cl.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	invoiceResponseBytes, err := ioutil.ReadAll(response.Body)
+	invoiceResponseBytes, err := helpers.Create(cl, invoiceURL, buf)
 	if err != nil {
 		return nil, err
 	}
@@ -225,19 +187,7 @@ func (i *Invoice) Update(cl *http.Client) (*Invoices, error) {
 	if err != nil {
 		return nil, err
 	}
-	request, err := http.NewRequest(http.MethodPut, invoiceURL+"/"+i.InvoiceID, bytes.NewReader(buf))
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Add("Content-Type", "application/json")
-
-	response, err := cl.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	invoiceResponseBytes, err := ioutil.ReadAll(response.Body)
+	invoiceResponseBytes, err := helpers.Update(cl, invoiceURL+"/"+i.InvoiceID, buf)
 	if err != nil {
 		return nil, err
 	}

@@ -109,19 +109,11 @@ type OrganisationCollection struct {
 
 // FindOrganisations will get all the organisation linked to the given tenantID
 func FindOrganisations(cl *http.Client) (org *OrganisationCollection, err error) {
-	request, err := http.NewRequest(http.MethodGet, organisationURL, nil)
+	organisationBytes, err := helpers.Find(cl, organisationURL)
 	if err != nil {
 		return nil, err
 	}
-	request.Header.Add("Accept", "application/json")
-
-	response, err := cl.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	err = json.NewDecoder(response.Body).Decode(&org)
+	err = json.Unmarshal(organisationBytes, &org)
 	if err != nil {
 		return nil, err
 	}

@@ -1,9 +1,7 @@
 package accounting
 
 import (
-	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/gofrs/uuid"
@@ -171,19 +169,7 @@ func unmarshalContact(contactResponseBytes []byte) (*Contacts, error) {
 // FindContacts will get all the contacts from Xero linked with the given
 // tenantID
 func FindContacts(cl *http.Client) (*Contacts, error) {
-	request, err := http.NewRequest(http.MethodGet, contactsURL, nil)
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Add("Accept", "application/json")
-
-	response, err := cl.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	contactResponseBytes, err := ioutil.ReadAll(response.Body)
+	contactResponseBytes, err := helpers.Find(cl, contactsURL)
 	if err != nil {
 		return nil, err
 	}
@@ -192,19 +178,7 @@ func FindContacts(cl *http.Client) (*Contacts, error) {
 
 // FindContact will find the contact info with the given contactID
 func FindContact(cl *http.Client, contactID uuid.UUID) (*Contact, error) {
-	request, err := http.NewRequest(http.MethodGet, contactsURL+"/"+contactID.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Add("Accept", "application/json")
-
-	response, err := cl.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	contactResponseBytes, err := ioutil.ReadAll(response.Body)
+	contactResponseBytes, err := helpers.Find(cl, contactsURL+"/"+contactID.String())
 	if err != nil {
 		return nil, err
 	}
@@ -224,19 +198,7 @@ func (c *Contacts) Create(cl *http.Client) (*Contacts, error) {
 	if err != nil {
 		return nil, err
 	}
-	request, err := http.NewRequest(http.MethodPost, contactsURL, bytes.NewReader(buf))
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Add("Content-Type", "application/json")
-
-	response, err := cl.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	contactResponseBytes, err := ioutil.ReadAll(response.Body)
+	contactResponseBytes, err := helpers.Create(cl, contactsURL, buf)
 	if err != nil {
 		return nil, err
 	}
@@ -252,19 +214,7 @@ func (c *Contact) Update(cl *http.Client) (*Contacts, error) {
 	if err != nil {
 		return nil, err
 	}
-	request, err := http.NewRequest(http.MethodPut, contactsURL+"/"+c.ContactID, bytes.NewReader(buf))
-	if err != nil {
-		return nil, err
-	}
-	request.Header.Add("Content-Type", "application/json")
-
-	response, err := cl.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	contactResponseBytes, err := ioutil.ReadAll(response.Body)
+	contactResponseBytes, err := helpers.Update(cl, contactsURL+"/"+c.ContactID, buf)
 	if err != nil {
 		return nil, err
 	}

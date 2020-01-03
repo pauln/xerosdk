@@ -1,5 +1,17 @@
 package accounting
 
+import (
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+
+	"github.com/quickaco/xerosdk/helpers"
+)
+
+const (
+	accountsURL = "https://api.xero.com/api.xro/2.0/Accounts"
+)
+
 //Account represents individual accounts in a Xero organisation
 type Account struct {
 
@@ -61,4 +73,55 @@ type Account struct {
 //Accounts contains a collection of Accounts
 type Accounts struct {
 	Accounts []Account `json:"Accounts,omitempty" xml:"Account,omitempty"`
+}
+
+//The Xero API returns Dates based on the .Net JSON date format available at the time of development
+//We need to convert these to a more usable format - RFC3339 for consistency with what the API expects to recieve
+func (a *Accounts) convertDates() error {
+	var err error
+	for n := len(a.Accounts) - 1; n >= 0; n-- {
+		a.Accounts[n].UpdatedDateUTC, err = helpers.DotNetJSONTimeToRFC3339(a.Accounts[n].UpdatedDateUTC, true)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func unmarshalAccount(accountResponseBytes []byte) (*Accounts, error) {
+	var accountResponse *Accounts
+	err := json.Unmarshal(accountResponseBytes, &accountResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	err = accountResponse.convertDates()
+	if err != nil {
+		return nil, err
+	}
+
+	return accountResponse, err
+}
+
+// FindAccounts will retrieve all the accounts
+func FindAccounts(cl *http.Client) (*Accounts, error) {
+	request, err := http.NewRequest(http.MethodGet, accountsURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Add("Accept", "application/json")
+
+	response, err := cl.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	accountResponseBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return unmarshalAccount(accountResponseBytes)
 }

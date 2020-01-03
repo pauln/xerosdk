@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gofrs/uuid"
+	"github.com/quickaco/xerosdk/helpers"
 )
 
 const (
@@ -18,21 +19,12 @@ type Tenant struct {
 }
 
 // GetTenants will return the value of the getting information from xero
-func GetTenants(c *http.Client) ([]Tenant, error) {
-	tenants := []Tenant{}
-	request, err := http.NewRequest(http.MethodGet, connectionsURL, nil)
+func GetTenants(cl *http.Client) (tenants []Tenant, err error) {
+	tenantResponseBytes, err := helpers.Find(cl, connectionsURL)
 	if err != nil {
 		return nil, err
 	}
-	request.Header.Add("Accept", "application/json")
-
-	response, err := c.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	if err = json.NewDecoder(response.Body).Decode(&tenants); err != nil {
+	if err = json.Unmarshal(tenantResponseBytes, &tenants); err != nil {
 		return nil, err
 	}
 	return tenants, nil
