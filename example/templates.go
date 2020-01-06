@@ -20,6 +20,9 @@ var connectedTemplate = `<p>AccessToken: {{.AccessToken}}</p>
 <p><a href="/brandingThemes"/>BrandingThemes</p>
 <p><a href="/contactGroups"/>ContactGroups</p>
 <p><a href="/creditNotes"/>CreditNotes</p>
+<p><a href="/currencies"/>Currencies</p>
+<p><a href="/employees"/>Employees</p>
+<p><a href="/invoiceReminders"/>InvoiceReminders</p>
 <p><a href="/refresh"/>Refresh</p>`
 
 var contactsTemplate = `
@@ -105,6 +108,7 @@ var contactGroupsTemplate = `
 {{range .ContactGroups}}
 	<p>--  <b>Name:</b>{{.Name}}  |  <b>Status:</b>{{.Status}}  |  <b>ContactGroupID:</b>{{.ContactGroupID}}</p>
 	<p>--  <b>Contacts:</b>{{.Contacts}}</p>
+	<br>
 {{end}}
 `
 
@@ -117,5 +121,25 @@ var creditNotesTemplate = `
 	<p>--  <b>CreditNoteID:</b>{{.CreditNoteID}}  |  <b>CreditNoteNumber:</b>{{.CreditNoteNumber}}  |  <b>Reference:</b>{{.Reference}}</p>
 	<p>--  <b>SentToContact:</b>{{.SentToContact}}  |  <b>CurrencyRate:</b>{{.CurrencyRate}}  |  <b>RemainingCredit:</b>{{.RemainingCredit}}</p>
 	<p>--  <b>Allocations:</b>{{.Allocations}}  |  <b>BrandingThemeID:</b>{{.BrandingThemeID}}  |  <b>HasAttachments:</b>{{.HasAttachments}}</p>
+	<br>
+{{end}}
+`
+
+var currenciesTemplate = `
+{{range .Currencies}}
+	<p>--  <b>Code:</b>{{.Code}}  |  <b>Description:</b>{{.Description}}</p>
+{{end}}
+`
+
+var employeesTemplate = `
+{{range .Employees}}
+	<p>--  <b>EmployeeID:</b>{{.EmployeeID}}  |  <b>Status:</b>{{.Status}}  |  <b>FirstName:</b>{{.FirstName}}</p>
+	<p>--  <b>LastName:</b>{{.LastName}}  |  <b>ExternalLink:</b>{{.ExternalLink}}</p>
+{{end}}
+`
+
+var invoiceRemindersTemplate = `
+{{range .InvoiceReminders}}
+	<p>--  <b>Enabled:</b>{{.Enabled}}</p>
 {{end}}
 `

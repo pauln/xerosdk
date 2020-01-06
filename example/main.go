@@ -61,6 +61,9 @@ func main() {
 	r.HandleFunc("/brandingThemes", XeroBrandingThemeHandler)
 	r.HandleFunc("/contactGroups", XeroContactGroupsHandler)
 	r.HandleFunc("/creditNotes", XeroCreditNotesHandler)
+	r.HandleFunc("/currencies", XeroCurrencyHandler)
+	r.HandleFunc("/employees", XeroEmployeesHandler)
+	r.HandleFunc("/invoiceReminders", XeroInvoiceRemindersHandler)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -501,5 +504,107 @@ func XeroCreditNotesHandler(w http.ResponseWriter, r *http.Request) {
 		CreditNotes []accounting.CreditNote
 	}{
 		CreditNotes: creditNotes,
+	})
+}
+
+// XeroCurrencyHandler handler will ask for all the currencies linked
+// to the given user and print out in a template
+func XeroCurrencyHandler(w http.ResponseWriter, r *http.Request) {
+	currencies := []accounting.Currency{}
+	se, _ := repo.GetSession(uuid.Nil)
+
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		c, err := accounting.FindCurrencies(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}))
+		if err != nil {
+			log.Panic(err)
+		}
+		currencies = append(currencies, c.Currencies...)
+	}
+	t, _ := template.New("currencies").Parse(currenciesTemplate)
+	t.Execute(w, struct {
+		Currencies []accounting.Currency
+	}{
+		Currencies: currencies,
+	})
+}
+
+// XeroEmployeesHandler handler will ask for all the employees linked
+// to the given user and print out in a template
+func XeroEmployeesHandler(w http.ResponseWriter, r *http.Request) {
+	employees := []accounting.Employee{}
+	se, _ := repo.GetSession(uuid.Nil)
+
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		e, err := accounting.FindEmployees(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}), nil)
+		if err != nil {
+			log.Panic(err)
+		}
+		employees = append(employees, e.Employess...)
+	}
+	t, _ := template.New("employees").Parse(employeesTemplate)
+	t.Execute(w, struct {
+		Employees []accounting.Employee
+	}{
+		Employees: employees,
+	})
+}
+
+// XeroInvoiceRemindersHandler handler will ask for all the invoice InvoiceReminders linked
+// to the given user and print out in a template
+func XeroInvoiceRemindersHandler(w http.ResponseWriter, r *http.Request) {
+	reminders := []accounting.InvoiceReminder{}
+	se, _ := repo.GetSession(uuid.Nil)
+
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		rem, err := accounting.FindInvoiceReminders(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}))
+		if err != nil {
+			log.Panic(err)
+		}
+		reminders = append(reminders, rem.InvoiceReminders...)
+	}
+	t, _ := template.New("invoiceReminders").Parse(invoiceRemindersTemplate)
+	t.Execute(w, struct {
+		InvoiceReminders []accounting.InvoiceReminder
+	}{
+		InvoiceReminders: reminders,
 	})
 }
