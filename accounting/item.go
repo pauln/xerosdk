@@ -1,5 +1,17 @@
 package accounting
 
+import (
+	"encoding/json"
+	"net/http"
+
+	"github.com/gofrs/uuid"
+	"github.com/quickaco/xerosdk/helpers"
+)
+
+const (
+	itemURL = "https://api.xero.com/api.xro/2.0/Items"
+)
+
 //Item is something that is sold or purchased.  It can have inventory tracked or not tracked.
 type Item struct {
 
@@ -64,4 +76,99 @@ type PurchaseAndSaleDetails struct {
 
 	//Used as an override if the default Tax Code for the selected AccountCode is not correct - see TaxTypes.
 	TaxType string `json:"TaxType,omitempty"`
+}
+
+//The Xero API returns Dates based on the .Net JSON date format available at the time of development
+//We need to convert these to a more usable format - RFC3339 for consistency with what the API expects to recieve
+func (i *Items) convertDates() error {
+	var err error
+	for n := len(i.Items) - 1; n >= 0; n-- {
+		i.Items[n].UpdatedDateUTC, err = helpers.DotNetJSONTimeToRFC3339(i.Items[n].UpdatedDateUTC, true)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func unmarshalItem(itemResponseBytes []byte) (*Items, error) {
+	var itemResponse *Items
+	err := json.Unmarshal(itemResponseBytes, &itemResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	err = itemResponse.convertDates()
+	if err != nil {
+		return nil, err
+	}
+
+	return itemResponse, err
+}
+
+// Create will create items given an Items struct
+func (i *Items) Create(cl *http.Client) (*Items, error) {
+	buf, err := json.Marshal(i)
+	if err != nil {
+		return nil, err
+	}
+	itemsResponseBytes, err := helpers.Create(cl, itemURL, buf)
+	if err != nil {
+		return nil, err
+	}
+
+	return unmarshalItem(itemsResponseBytes)
+}
+
+// Update will update an item given an Items struct
+// This will only handle single item - you cannot update multiple items in a single call
+func (i *Item) Update(cl *http.Client) (*Items, error) {
+	its := Items{
+		Items: []Item{*i},
+	}
+	buf, err := json.Marshal(its)
+	if err != nil {
+		return nil, err
+	}
+	itemsResponseBytes, err := helpers.Update(cl, itemURL+"/"+i.ItemID, buf)
+	if err != nil {
+		return nil, err
+	}
+
+	return unmarshalItem(itemsResponseBytes)
+}
+
+// FindItems will get all items.
+func FindItems(cl *http.Client, additionalHeaders map[string]string, queryParameters map[string]string) (*Items, error) {
+	itemsResponseBytes, err := helpers.Find(cl, itemURL, additionalHeaders, queryParameters)
+	if err != nil {
+		return nil, err
+	}
+
+	return unmarshalItem(itemsResponseBytes)
+}
+
+//FindItem will get a single item - itemID must be a GUID for an item
+func FindItem(cl *http.Client, itemID uuid.UUID) (*Item, error) {
+	itemsResponseBytes, err := helpers.Find(cl, itemURL+"/"+itemID.String(), nil, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	items, err := unmarshalItem(itemsResponseBytes)
+	if err != nil {
+		return nil, err
+	}
+	return &items.Items[0], nil
+}
+
+//RemoveItem will get a single item - itemID must be a GUID for an item
+func RemoveItem(cl *http.Client, itemID uuid.UUID) (*Items, error) {
+	itemsResponseBytes, err := helpers.Remove(cl, itemURL+"/"+itemID.String())
+	if err != nil {
+		return nil, err
+	}
+
+	return unmarshalItem(itemsResponseBytes)
 }
