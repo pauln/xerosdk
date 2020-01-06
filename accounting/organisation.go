@@ -109,7 +109,7 @@ type OrganisationCollection struct {
 
 // FindOrganisations will get all the organisation linked to the given tenantID
 func FindOrganisations(cl *http.Client) (org *OrganisationCollection, err error) {
-	organisationBytes, err := helpers.Find(cl, organisationURL)
+	organisationBytes, err := helpers.Find(cl, organisationURL, nil, nil)
 	if err != nil {
 		return nil, err
 	}

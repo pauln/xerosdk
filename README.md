@@ -8,6 +8,8 @@ The work is still in progress
 
 Documentation reference https://developer.xero.com/documentation/
 
+This SDK only handles requests and responses using json format
+
 
 ### Configure
 

@@ -20,7 +20,7 @@ type Tenant struct {
 
 // GetTenants will return the value of the getting information from xero
 func GetTenants(cl *http.Client) (tenants []Tenant, err error) {
-	tenantResponseBytes, err := helpers.Find(cl, connectionsURL)
+	tenantResponseBytes, err := helpers.Find(cl, connectionsURL, nil, nil)
 	if err != nil {
 		return nil, err
 	}

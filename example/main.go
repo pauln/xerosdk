@@ -55,6 +55,7 @@ func main() {
 	r.HandleFunc("/invoices", XeroInvoicesHandler)
 	r.HandleFunc("/refresh", XeroRefreshTokenHandler)
 	r.HandleFunc("/organisations", XeroOrganisationsHandler)
+	r.HandleFunc("/accounts", XeroAccountsHandler)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -291,5 +292,39 @@ func XeroOrganisationsHandler(w http.ResponseWriter, r *http.Request) {
 		Organisations []accounting.Organisation
 	}{
 		Organisations: organisations,
+	})
+}
+
+// XeroAccountsHandler handler will ask for all the accounts linked to the
+// given user and print out in a template
+func XeroAccountsHandler(w http.ResponseWriter, r *http.Request) {
+	accounts := []accounting.Account{}
+	se, _ := repo.GetSession(uuid.Nil)
+
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		accs, err := accounting.FindAccounts(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}), nil)
+		if err != nil {
+			log.Panic(err)
+		}
+		accounts = append(accounts, accs.Accounts...)
+	}
+	t, _ := template.New("accounts").Parse(accountsTemplate)
+	t.Execute(w, struct {
+		Accounts []accounting.Account
+	}{
+		Accounts: accounts,
 	})
 }

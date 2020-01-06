@@ -2,9 +2,10 @@ package accounting
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
+	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/quickaco/xerosdk/helpers"
 )
 
@@ -104,21 +105,82 @@ func unmarshalAccount(accountResponseBytes []byte) (*Accounts, error) {
 	return accountResponse, err
 }
 
-// FindAccounts will retrieve all the accounts
-func FindAccounts(cl *http.Client) (*Accounts, error) {
-	request, err := http.NewRequest(http.MethodGet, accountsURL, nil)
+//FindAccountsModifiedSince will get all accounts modified after a specified date.
+//additional querystringParameters such as where and order can be added as a map
+func FindAccountsModifiedSince(cl *http.Client, modifiedSince time.Time, queryParameters map[string]string) (*Accounts, error) {
+	additionalHeaders := map[string]string{}
+	additionalHeaders["If-Modified-Since"] = modifiedSince.Format(time.RFC3339)
+
+	accountResponseBytes, err := helpers.Find(cl, accountsURL, additionalHeaders, queryParameters)
 	if err != nil {
 		return nil, err
 	}
-	request.Header.Add("Accept", "application/json")
 
-	response, err := cl.Do(request)
+	return unmarshalAccount(accountResponseBytes)
+}
+
+//FindAccounts will get all accounts. These account will not have details like line items.
+//additional querystringParameters such as where and order can be added as a map
+func FindAccounts(cl *http.Client, queryParameters map[string]string) (*Accounts, error) {
+	accountResponseBytes, err := helpers.Find(cl, accountsURL, nil, queryParameters)
 	if err != nil {
 		return nil, err
 	}
-	defer response.Body.Close()
 
-	accountResponseBytes, err := ioutil.ReadAll(response.Body)
+	return unmarshalAccount(accountResponseBytes)
+}
+
+//FindAccount will get a single account - accountID must be a GUID for an account
+func FindAccount(cl *http.Client, accountID uuid.UUID) (*Account, error) {
+	accountResponseBytes, err := helpers.Find(cl, accountsURL+"/"+accountID.String(), nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	a, err := unmarshalAccount(accountResponseBytes)
+	if err != nil {
+		return nil, err
+	}
+	if len(a.Accounts) > 0 {
+		return &a.Accounts[0], nil
+	}
+	return nil, nil
+}
+
+// RemoveAccount will get a single account - accountID must be a GUID for an account
+func RemoveAccount(cl *http.Client, accountID uuid.UUID) (*Accounts, error) {
+	accountResponseBytes, err := helpers.Remove(cl, accountsURL+"/"+accountID.String())
+	if err != nil {
+		return nil, err
+	}
+
+	return unmarshalAccount(accountResponseBytes)
+}
+
+// Create will create accounts given an Accounts struct
+func (a *Accounts) Create(cl *http.Client) (*Accounts, error) {
+	buf, err := json.Marshal(a)
+	if err != nil {
+		return nil, err
+	}
+	accountResponseBytes, err := helpers.Create(cl, accountsURL, buf)
+	if err != nil {
+		return nil, err
+	}
+
+	return unmarshalAccount(accountResponseBytes)
+}
+
+// Update will update an account given an Accounts struct
+// This will only handle single account - you cannot update multiple accounts in a single call
+func (a *Account) Update(cl *http.Client) (*Accounts, error) {
+	acc := Accounts{
+		Accounts: []Account{*a},
+	}
+	buf, err := json.Marshal(acc)
+	if err != nil {
+		return nil, err
+	}
+	accountResponseBytes, err := helpers.Update(cl, accountsURL+"/"+a.AccountID, buf)
 	if err != nil {
 		return nil, err
 	}

@@ -169,7 +169,7 @@ func unmarshalContact(contactResponseBytes []byte) (*Contacts, error) {
 // FindContacts will get all the contacts from Xero linked with the given
 // tenantID
 func FindContacts(cl *http.Client) (*Contacts, error) {
-	contactResponseBytes, err := helpers.Find(cl, contactsURL)
+	contactResponseBytes, err := helpers.Find(cl, contactsURL, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +178,7 @@ func FindContacts(cl *http.Client) (*Contacts, error) {
 
 // FindContact will find the contact info with the given contactID
 func FindContact(cl *http.Client, contactID uuid.UUID) (*Contact, error) {
-	contactResponseBytes, err := helpers.Find(cl, contactsURL+"/"+contactID.String())
+	contactResponseBytes, err := helpers.Find(cl, contactsURL+"/"+contactID.String(), nil, nil)
 	if err != nil {
 		return nil, err
 	}

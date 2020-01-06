@@ -14,6 +14,7 @@ var connectedTemplate = `<p>AccessToken: {{.AccessToken}}</p>
 <p><a href="/contacts"/>Contacts</p>
 <p><a href="/invoices"/>Invoices</p>
 <p><a href="/organisations"/>Organisations</p>
+<p><a href="/accounts"/>Accounts</p>
 <p><a href="/refresh"/>Refresh</p>`
 
 var contactsTemplate = `
@@ -50,5 +51,16 @@ var organisationsTemplate = `
 	<p>-- ShortCode:{{.ShortCode}} | LineOfBusiness:{{.LineOfBusiness}} | Addresses:{{.Addresses}}</p>
 	<p>-- Phones:{{.Phones}} | ExternalLinks:{{.ExternalLinks}}</p>
 	<br>
+{{end}}
+`
+
+var accountsTemplate = `
+{{range .Accounts}}
+	<p><-- Code:{{.Code}} | Name:{{.Name}} | Type:{{.Type}}/p>
+	<p><-- BankAccountNumber:{{.BankAccountNumber}} | Status:{{.Status}} | Description:{{.Description}}/p>
+	<p><-- BankAccountType:{{.BankAccountType}} | CurrencyCode:{{.CurrencyCode}} | TaxType:{{.TaxType}}/p>
+	<p><-- EnablePaymentsToAccount:{{.EnablePaymentsToAccount}} | ShowInExpenseClaims:{{.ShowInExpenseClaims}} | AccountID:{{.AccountID}}/p>
+	<p><-- Class:{{.Class}} | SystemAccount:{{.SystemAccount}} | ReportingCode:{{.ReportingCode}}/p>
+	<p><-- ReportingCodeName:{{.ReportingCodeName}} | HasAttachments:{{.HasAttachments}} | UpdatedDateUTC:{{.UpdatedDateUTC}}/p>
 {{end}}
 `

@@ -145,7 +145,7 @@ func unmarshalInvoice(invoiceResponseBytes []byte) (*Invoices, error) {
 // FindInvoices function will return the list of all the invoices tied to this
 // tenantID
 func FindInvoices(cl *http.Client) (*Invoices, error) {
-	invoiceResponseBytes, err := helpers.Find(cl, invoiceURL)
+	invoiceResponseBytes, err := helpers.Find(cl, invoiceURL, nil, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -154,7 +154,7 @@ func FindInvoices(cl *http.Client) (*Invoices, error) {
 
 // FindInvoice function will return the invoice with the given criteria
 func FindInvoice(cl *http.Client, invoiceID uuid.UUID) (*Invoice, error) {
-	invoiceResponseBytes, err := helpers.Find(cl, invoiceURL+"/"+invoiceID.String())
+	invoiceResponseBytes, err := helpers.Find(cl, invoiceURL+"/"+invoiceID.String(), nil, nil)
 	if err != nil {
 		return nil, err
 	}
