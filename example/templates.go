@@ -16,6 +16,7 @@ var connectedTemplate = `<p>AccessToken: {{.AccessToken}}</p>
 <p><a href="/organisations"/>Organisations</p>
 <p><a href="/accounts"/>Accounts</p>
 <p><a href="/bankTransactions"/>BankTransactions</p>
+<p><a href="/bankTransfers"/>BankTransfers</p>
 <p><a href="/refresh"/>Refresh</p>`
 
 var contactsTemplate = `
@@ -76,5 +77,14 @@ var bankTransactionsTemplate = `
 	<p>-- BankAccount:{{.BankAccount}} | PrepaymentID:{{.PrepaymentID}} | OverpaymentID:{{.OverpaymentID}}</p>
 	<p>-- UpdatedDateUTC:{{.UpdatedDateUTC}} | HasAttachments:{{.HasAttachments}}</p>
 	<br>
+{{end}}
+`
+
+var bankTransfersTemplate = `
+{{range .BankTransfers}}
+	<p><-- Amount:{{.Amount}} | Date:{{.Date}} | BankTransferID:{{.BankTransferID}}</p>
+	<p><-- CurrencyRate:{{.CurrencyRate}} | FromBankTransactionID:{{.FromBankTransactionID}} | ToBankTransactionID:{{.ToBankTransactionID}}</p>
+	<p><-- HasAttachments:{{.HasAttachments}} | CreatedDateUTC:{{.CreatedDateUTC}} | FromBankAccount:{{.FromBankAccount}}</p>
+	<p><-- ToBankAccount:{{.ToBankAccount}}</p>
 {{end}}
 `
