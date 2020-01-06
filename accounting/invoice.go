@@ -15,102 +15,102 @@ const (
 //Invoice is an Accounts Payable or Accounts Recievable document in a Xero organisation
 type Invoice struct {
 	// See Invoice Types
-	Type string `json:"Type" xml:"Type"`
+	Type string `json:"Type"`
 
 	// See Contacts
-	Contact Contact `json:"Contact" xml:"Contact"`
+	Contact Contact `json:"Contact"`
 
 	// See LineItems
-	LineItems []LineItem `json:"LineItems" xml:"LineItems>LineItem"`
+	LineItems []LineItem `json:"LineItems"`
 
 	// Date invoice was issued – YYYY-MM-DD. If the Date element is not specified it will default to the current date based on the timezone setting of the organisation
-	Date string `json:"DateString,omitempty" xml:"Date,omitempty"`
+	Date string `json:"DateString,omitempty"`
 
 	// Date invoice is due – YYYY-MM-DD
-	DueDate string `json:"DueDateString,omitempty" xml:"DueDate,omitempty"`
+	DueDate string `json:"DueDateString,omitempty"`
 
 	// Line amounts are exclusive of tax by default if you don’t specify this element. See Line Amount Types
-	LineAmountTypes string `json:"LineAmountTypes,omitempty" xml:"LineAmountTypes,omitempty"`
+	LineAmountTypes string `json:"LineAmountTypes,omitempty"`
 
 	// ACCREC – Unique alpha numeric code identifying invoice (when missing will auto-generate from your Organisation Invoice Settings) (max length = 255)
-	InvoiceNumber string `json:"InvoiceNumber,omitempty" xml:"InvoiceNumber,omitempty"`
+	InvoiceNumber string `json:"InvoiceNumber,omitempty"`
 
 	// ACCREC only – additional reference number (max length = 255)
-	Reference string `json:"Reference,omitempty" xml:"Reference,omitempty"`
+	Reference string `json:"Reference,omitempty"`
 
 	// See BrandingThemes
-	BrandingThemeID string `json:"BrandingThemeID,omitempty" xml:"BrandingThemeID,omitempty"`
+	BrandingThemeID string `json:"BrandingThemeID,omitempty"`
 
 	// URL link to a source document – shown as “Go to [appName]” in the Xero app
-	URL string `json:"Url,omitempty" xml:"Url,omitempty"`
+	URL string `json:"Url,omitempty"`
 
 	// The currency that invoice has been raised in (see Currencies)
-	CurrencyCode string `json:"CurrencyCode,omitempty" xml:"CurrencyCode,omitempty"`
+	CurrencyCode string `json:"CurrencyCode,omitempty"`
 
 	// The currency rate for a multicurrency invoice. If no rate is specified, the XE.com day rate is used. (max length = [18].[6])
-	CurrencyRate float64 `json:"CurrencyRate,omitempty" xml:"CurrencyRate,omitempty"`
+	CurrencyRate float64 `json:"CurrencyRate,omitempty"`
 
 	// See Invoice Status Codes
-	Status string `json:"Status,omitempty" xml:"Status,omitempty"`
+	Status string `json:"Status,omitempty"`
 
 	// Boolean to set whether the invoice in the Xero app should be marked as “sent”. This can be set only on invoices that have been approved
-	SentToContact bool `json:"SentToContact,omitempty" xml:"SentToContact,omitempty"`
+	SentToContact bool `json:"SentToContact,omitempty"`
 
 	// Shown on sales invoices (Accounts Receivable) when this has been set
-	ExpectedPaymentDate string `json:"ExpectedPaymentDate,omitempty" xml:"ExpectedPaymentDate,omitempty"`
+	ExpectedPaymentDate string `json:"ExpectedPaymentDate,omitempty"`
 
 	// Shown on bills (Accounts Payable) when this has been set
-	PlannedPaymentDate string `json:"PlannedPaymentDate,omitempty" xml:"PlannedPaymentDate,omitempty"`
+	PlannedPaymentDate string `json:"PlannedPaymentDate,omitempty"`
 
 	// Total of invoice excluding taxes
-	SubTotal float64 `json:"SubTotal,omitempty" xml:"SubTotal,omitempty"`
+	SubTotal float64 `json:"SubTotal,omitempty"`
 
 	// Total tax on invoice
-	TotalTax float64 `json:"TotalTax,omitempty" xml:"TotalTax,omitempty"`
+	TotalTax float64 `json:"TotalTax,omitempty"`
 
 	// Total of Invoice tax inclusive (i.e. SubTotal + TotalTax). This will be ignored if it doesn’t equal the sum of the LineAmounts
-	Total float64 `json:"Total,omitempty" xml:"Total,omitempty"`
+	Total float64 `json:"Total,omitempty"`
 
 	// Total of discounts applied on the invoice line items
-	TotalDiscount float64 `json:"TotalDiscount,omitempty" xml:"-"`
+	TotalDiscount float64 `json:"TotalDiscount,omitempty"`
 
 	// Xero generated unique identifier for invoice
-	InvoiceID string `json:"InvoiceID,omitempty" xml:"InvoiceID,omitempty"`
+	InvoiceID string `json:"InvoiceID,omitempty"`
 
 	// boolean to indicate if an invoice has an attachment
-	HasAttachments bool `json:"HasAttachments,omitempty" xml:"-"`
+	HasAttachments bool `json:"HasAttachments,omitempty"`
 
 	// See Payments
-	Payments *[]Payment `json:"Payments,omitempty" xml:"-"`
+	Payments *[]Payment `json:"Payments,omitempty"`
 
 	// See Prepayments
-	Prepayments *[]Prepayment `json:"Prepayments,omitempty" xml:"-"`
+	Prepayments *[]Prepayment `json:"Prepayments,omitempty"`
 
 	// See Overpayments
-	Overpayments *[]Overpayment `json:"Overpayments,omitempty" xml:"-"`
+	Overpayments *[]Overpayment `json:"Overpayments,omitempty"`
 
 	// Amount remaining to be paid on invoice
-	AmountDue float64 `json:"AmountDue,omitempty" xml:"-"`
+	AmountDue float64 `json:"AmountDue,omitempty"`
 
 	// Sum of payments received for invoice
-	AmountPaid float64 `json:"AmountPaid,omitempty" xml:"-"`
+	AmountPaid float64 `json:"AmountPaid,omitempty"`
 
 	// The date the invoice was fully paid. Only returned on fully paid invoices
-	FullyPaidOnDate string `json:"FullyPaidOnDate,omitempty" xml:"-"`
+	FullyPaidOnDate string `json:"FullyPaidOnDate,omitempty"`
 
 	// Sum of all credit notes, over-payments and pre-payments applied to invoice
-	AmountCredited float64 `json:"AmountCredited,omitempty" xml:"-"`
+	AmountCredited float64 `json:"AmountCredited,omitempty"`
 
 	// Last modified date UTC format
-	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty" xml:"-"`
+	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty"`
 
 	// Details of credit notes that have been applied to an invoice
-	CreditNotes *[]CreditNote `json:"CreditNotes,omitempty" xml:"-"`
+	CreditNotes *[]CreditNote `json:"CreditNotes,omitempty"`
 }
 
 //Invoices contains a collection of Invoices
 type Invoices struct {
-	Invoices []Invoice `json:"Invoices" xml:"Invoice"`
+	Invoices []Invoice `json:"Invoices"`
 }
 
 //The Xero API returns Dates based on the .Net JSON date format available at the time of development

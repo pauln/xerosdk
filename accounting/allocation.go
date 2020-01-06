@@ -4,16 +4,16 @@ package accounting
 type Allocation struct {
 
 	// the amount being applied to the invoice
-	AppliedAmount float64 `json:"AppliedAmount,omitempty" xml:"AppliedAmount,omitempty"`
+	AppliedAmount float64 `json:"AppliedAmount,omitempty"`
 
 	// the date the prepayment is applied YYYY-MM-DD (read-only). This will be the latter of the invoice date and the prepayment date.
-	Date string `json:"Date,omitempty" xml:"-"`
+	Date string `json:"Date,omitempty"`
 
 	//The Invoice that the allocation will be made to
-	Invoice InvoiceID `json:"Invoice,omitempty" xml:"Invoice>InvoiceID,omitempty"`
+	Invoice InvoiceID `json:"Invoice,omitempty"`
 }
 
 //Allocations is a collection of Allocations
 type Allocations struct {
-	Allocations []Allocation `json:"Allocations" xml:"Allocation"`
+	Allocations []Allocation `json:"Allocations"`
 }

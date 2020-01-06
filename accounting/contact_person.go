@@ -4,14 +4,14 @@ package accounting
 type ContactPerson struct {
 
 	// First name of person
-	FirstName string `json:"FirstName,omitempty" xml:"FirstName,omitempty"`
+	FirstName string `json:"FirstName,omitempty"`
 
 	// Last name of person
-	LastName string `json:"LastName,omitempty" xml:"LastName,omitempty"`
+	LastName string `json:"LastName,omitempty"`
 
 	// Email address of person
-	EmailAddress string `json:"EmailAddress,omitempty" xml:"EmailAddress,omitempty"`
+	EmailAddress string `json:"EmailAddress,omitempty"`
 
 	// boolean to indicate whether contact should be included on emails with invoices etc.
-	IncludeInEmails bool `json:"IncludeInEmails,omitempty" xml:"IncludeInEmails,omitempty"`
+	IncludeInEmails bool `json:"IncludeInEmails,omitempty"`
 }

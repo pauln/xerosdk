@@ -27,7 +27,8 @@ func Find(cl *http.Client, endpoint string, additionalHeaders map[string]string,
 
 // Create function encapsulate all the POST method calls to Xero API
 func Create(cl *http.Client, endpoint string, body []byte) ([]byte, error) {
-	request, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewReader(body))
+	// We need to use here th PUT method due the constraints from the Xero API
+	request, err := http.NewRequest(http.MethodPut, endpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +39,8 @@ func Create(cl *http.Client, endpoint string, body []byte) ([]byte, error) {
 
 // Update function encapsulate all the PUT method calls to Xero API
 func Update(cl *http.Client, endpoint string, body []byte) ([]byte, error) {
-	request, err := http.NewRequest(http.MethodPut, endpoint, bytes.NewReader(body))
+	// We need to use here the POST method due the constraints from the Xero API
+	request, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}

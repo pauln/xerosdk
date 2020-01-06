@@ -4,19 +4,19 @@ package accounting
 type TrackingCategory struct {
 
 	// The Xero identifier for a tracking categorye.g. 297c2dc5-cc47-4afd-8ec8-74990b8761e9
-	TrackingCategoryID string `json:"TrackingCategoryID,omitempty" xml:"TrackingCategoryID,omitempty"`
+	TrackingCategoryID string `json:"TrackingCategoryID,omitempty"`
 
 	// The name of the tracking category e.g. Department, Region (max length = 100)
-	Name string `json:"Name,omitempty" xml:"Name,omitempty"`
+	Name string `json:"Name,omitempty"`
 
 	// The status of a tracking category
-	Status string `json:"Status,omitempty" xml:"Status,omitempty"`
+	Status string `json:"Status,omitempty"`
 
 	// See Tracking Options
-	Options []TrackingOption `json:"Options,omitempty" xml:"Option"`
+	Options []TrackingOption `json:"Options,omitempty"`
 }
 
 //TrackingCategories is a collection of TrackingCategories
 type TrackingCategories struct {
-	TrackingCategories []TrackingCategory `json:"TrackingCategories" xml:"TrackingCategory"`
+	TrackingCategories []TrackingCategory `json:"TrackingCategories"`
 }

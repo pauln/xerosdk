@@ -1,14 +1,15 @@
 package accounting
 
+// Phone type will keep the information for the Phone model
 type Phone struct {
-	PhoneType string `json:"PhoneType,omitempty" xml:"PhoneType,omitempty"`
+	PhoneType string `json:"PhoneType,omitempty"`
 
 	// max length = 50
-	PhoneNumber string `json:"PhoneNumber,omitempty" xml:"PhoneNumber,omitempty"`
+	PhoneNumber string `json:"PhoneNumber,omitempty"`
 
 	// max length = 10
-	PhoneAreaCode string `json:"PhoneAreaCode,omitempty" xml:"PhoneAreaCode,omitempty"`
+	PhoneAreaCode string `json:"PhoneAreaCode,omitempty"`
 
 	// max length = 20
-	PhoneCountryCode string `json:"PhoneCountryCode,omitempty" xml:"PhoneCountryCode,omitempty"`
+	PhoneCountryCode string `json:"PhoneCountryCode,omitempty"`
 }

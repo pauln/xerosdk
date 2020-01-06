@@ -17,39 +17,39 @@ const (
 type BankTransfer struct {
 
 	//
-	Amount float64 `json:"Amount" xml:"Amount"`
+	Amount float64 `json:"Amount"`
 
 	// The date of the Transfer YYYY-MM-DD
-	Date string `json:"Date,omitempty" xml:"Date,omitempty"`
+	Date string `json:"Date,omitempty"`
 
 	// The identifier of the Bank Transfer
-	BankTransferID string `json:"BankTransferID,omitempty" xml:"BankTransferID,omitempty"`
+	BankTransferID string `json:"BankTransferID,omitempty"`
 
 	// The currency rate
-	CurrencyRate float64 `json:"CurrencyRate,omitempty" xml:"CurrencyRate,omitempty"`
+	CurrencyRate float64 `json:"CurrencyRate,omitempty"`
 
 	// The Bank Transaction ID for the source account
-	FromBankTransactionID string `json:"FromBankTransactionID,omitempty" xml:"FromBankTransactionID,omitempty"`
+	FromBankTransactionID string `json:"FromBankTransactionID,omitempty"`
 
 	// The Bank Transaction ID for the destination account
-	ToBankTransactionID string `json:"ToBankTransactionID,omitempty" xml:"ToBankTransactionID,omitempty"`
+	ToBankTransactionID string `json:"ToBankTransactionID,omitempty"`
 
 	// Boolean to indicate if a Bank Transfer has an attachment
-	HasAttachments bool `json:"HasAttachments,omitempty" xml:"HasAttachments,omitempty"`
+	HasAttachments bool `json:"HasAttachments,omitempty"`
 
 	// UTC timestamp of creation date of bank transfer
-	CreatedDateUTC string `json:"CreatedDateUTC,omitempty" xml:"CreatedDateUTC,omitempty"`
+	CreatedDateUTC string `json:"CreatedDateUTC,omitempty"`
 
 	// The source BankAccount
-	FromBankAccount BankAccount `json:"FromBankAccount,omitempty" xml:"FromBankAccount,omitempty"`
+	FromBankAccount BankAccount `json:"FromBankAccount,omitempty"`
 
 	// The destination BankAccount
-	ToBankAccount BankAccount `json:"ToBankAccount,omitempty" xml:"ToBankAccount,omitempty"`
+	ToBankAccount BankAccount `json:"ToBankAccount,omitempty"`
 }
 
 //BankTransfers contains a collection of BankTransfers
 type BankTransfers struct {
-	BankTransfers []BankTransfer `json:"BankTransfers" xml:"BankTransfer"`
+	BankTransfers []BankTransfer `json:"BankTransfers"`
 }
 
 //The Xero API returns Dates based on the .Net JSON date format available at the time of development

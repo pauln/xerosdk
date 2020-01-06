@@ -17,6 +17,9 @@ var connectedTemplate = `<p>AccessToken: {{.AccessToken}}</p>
 <p><a href="/accounts"/>Accounts</p>
 <p><a href="/bankTransactions"/>BankTransactions</p>
 <p><a href="/bankTransfers"/>BankTransfers</p>
+<p><a href="/brandingThemes"/>BrandingThemes</p>
+<p><a href="/contactGroups"/>ContactGroups</p>
+<p><a href="/creditNotes"/>CreditNotes</p>
 <p><a href="/refresh"/>Refresh</p>`
 
 var contactsTemplate = `
@@ -86,5 +89,33 @@ var bankTransfersTemplate = `
 	<p><-- CurrencyRate:{{.CurrencyRate}} | FromBankTransactionID:{{.FromBankTransactionID}} | ToBankTransactionID:{{.ToBankTransactionID}}</p>
 	<p><-- HasAttachments:{{.HasAttachments}} | CreatedDateUTC:{{.CreatedDateUTC}} | FromBankAccount:{{.FromBankAccount}}</p>
 	<p><-- ToBankAccount:{{.ToBankAccount}}</p>
+	<br>
+{{end}}
+`
+
+var brandingThemesTemplate = `
+{{range .BrandingThemes}}
+	<p>--  <b>BrandingThemeID:</b>{{.BrandingThemeID}}  |  <b>Name:</b>{{.Name}}  |  <b>SortOrder:</b>{{.SortOrder}}</p>
+	<p>--  <b>CreatedDateUTC:</b>{{.CreatedDateUTC}}
+	<br>
+{{end}}
+`
+
+var contactGroupsTemplate = `
+{{range .ContactGroups}}
+	<p>--  <b>Name:</b>{{.Name}}  |  <b>Status:</b>{{.Status}}  |  <b>ContactGroupID:</b>{{.ContactGroupID}}</p>
+	<p>--  <b>Contacts:</b>{{.Contacts}}</p>
+{{end}}
+`
+
+var creditNotesTemplate = `
+{{range .CreditNotes}}
+	<p>--  <b>Type:</b>{{.Type}}  |  <b>Contact:</b>{{.Contact}}  |  <b>Date:</b>{{.Date}}</p>
+	<p>--  <b>Status:</b>{{.Status}}  |  <b>LineAmountTypes:</b>{{.LineAmountTypes}}  |  <b>LineItems:</b>{{.LineItems}}</p>
+	<p>--  <b>SubTotal:</b>{{.SubTotal}}  |  <b>TotalTax:</b>{{.TotalTax}}  |  <b>Total:</b>{{.Total}}</p>
+	<p>--  <b>UpdatedDateUTC:</b>{{.UpdatedDateUTC}}  |  <b>CurrencyCode:</b>{{.CurrencyCode}}  |  <b>FullyPaidOnDate:</b>{{.FullyPaidOnDate}}</p>
+	<p>--  <b>CreditNoteID:</b>{{.CreditNoteID}}  |  <b>CreditNoteNumber:</b>{{.CreditNoteNumber}}  |  <b>Reference:</b>{{.Reference}}</p>
+	<p>--  <b>SentToContact:</b>{{.SentToContact}}  |  <b>CurrencyRate:</b>{{.CurrencyRate}}  |  <b>RemainingCredit:</b>{{.RemainingCredit}}</p>
+	<p>--  <b>Allocations:</b>{{.Allocations}}  |  <b>BrandingThemeID:</b>{{.BrandingThemeID}}  |  <b>HasAttachments:</b>{{.HasAttachments}}</p>
 {{end}}
 `

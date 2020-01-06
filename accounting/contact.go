@@ -16,122 +16,122 @@ const (
 type Contact struct {
 
 	// Xero identifier
-	ContactID string `json:"ContactID,omitempty" xml:"ContactID,omitempty"`
+	ContactID string `json:"ContactID,omitempty"`
 
 	// This can be updated via the API only i.e. This field is read only on the Xero contact screen, used to identify contacts in external systems (max length = 50). If the Contact Number is used, this is displayed as Contact Code in the Contacts UI in Xero.
-	ContactNumber string `json:"ContactNumber,omitempty" xml:"ContactNumber,omitempty"`
+	ContactNumber string `json:"ContactNumber,omitempty"`
 
 	// A user defined account number. This can be updated via the API and the Xero UI (max length = 50)
-	AccountNumber string `json:"AccountNumber,omitempty" xml:"AccountNumber,omitempty"`
+	AccountNumber string `json:"AccountNumber,omitempty"`
 
 	// Current status of a contact – see contact status types
-	ContactStatus string `json:"ContactStatus,omitempty" xml:"ContactStatus,omitempty"`
+	ContactStatus string `json:"ContactStatus,omitempty"`
 
 	// Full name of contact/organisation (max length = 255)
-	Name string `json:"Name,omitempty" xml:"Name,omitempty"`
+	Name string `json:"Name,omitempty"`
 
 	// First name of contact person (max length = 255)
-	FirstName string `json:"FirstName,omitempty" xml:"FirstName,omitempty"`
+	FirstName string `json:"FirstName,omitempty"`
 
 	// Last name of contact person (max length = 255)
-	LastName string `json:"LastName,omitempty" xml:"LastName,omitempty"`
+	LastName string `json:"LastName,omitempty"`
 
 	// Email address of contact person (umlauts not supported) (max length = 255)
-	EmailAddress string `json:"EmailAddress,omitempty" xml:"EmailAddress,omitempty"`
+	EmailAddress string `json:"EmailAddress,omitempty"`
 
 	// Skype user name of contact
-	SkypeUserName string `json:"SkypeUserName,omitempty" xml:"SkypeUserName,omitempty"`
+	SkypeUserName string `json:"SkypeUserName,omitempty"`
 
 	// See contact persons
-	ContactPersons *[]ContactPerson `json:"ContactPersons,omitempty" xml:"ContactPersons>ContactPerson,omitempty"`
+	ContactPersons *[]ContactPerson `json:"ContactPersons,omitempty"`
 
 	// Bank account number of contact
-	BankAccountDetails string `json:"BankAccountDetails,omitempty" xml:"BankAccountDetails,omitempty"`
+	BankAccountDetails string `json:"BankAccountDetails,omitempty"`
 
 	// Tax number of contact – this is also known as the ABN (Australia), GST Number (New Zealand), VAT Number (UK) or Tax ID Number (US and global) in the Xero UI depending on which regionalized version of Xero you are using (max length = 50)
-	TaxNumber string `json:"TaxNumber,omitempty" xml:"TaxNumber,omitempty"`
+	TaxNumber string `json:"TaxNumber,omitempty"`
 
 	// Default tax type used for contact on AR Contacts
-	AccountsReceivableTaxType string `json:"AccountsReceivableTaxType,omitempty" xml:"AccountsReceivableTaxType,omitempty"`
+	AccountsReceivableTaxType string `json:"AccountsReceivableTaxType,omitempty"`
 
 	// Default tax type used for contact on AP Contacts
-	AccountsPayableTaxType string `json:"AccountsPayableTaxType,omitempty" xml:"AccountsPayableTaxType,omitempty"`
+	AccountsPayableTaxType string `json:"AccountsPayableTaxType,omitempty"`
 
 	// Store certain address types for a contact – see address types
-	Addresses *[]Address `json:"Addresses,omitempty" xml:"Addresses>Address,omitempty"`
+	Addresses *[]Address `json:"Addresses,omitempty"`
 
 	// Store certain phone types for a contact – see phone types
-	Phones *[]Phone `json:"Phones,omitempty" xml:"Phones>Phone,omitempty"`
+	Phones *[]Phone `json:"Phones,omitempty"`
 
 	// true or false – Boolean that describes if a contact that has any AP Contacts entered against them. Cannot be set via PUT or POST – it is automatically set when an accounts payable Contact is generated against this contact.
-	IsSupplier bool `json:"IsSupplier,omitempty" xml:"IsSupplier,omitempty"`
+	IsSupplier bool `json:"IsSupplier,omitempty"`
 
 	// true or false – Boolean that describes if a contact has any AR Contacts entered against them. Cannot be set via PUT or POST – it is automatically set when an accounts receivable Contact is generated against this contact.
-	IsCustomer bool `json:"IsCustomer,omitempty" xml:"IsCustomer,omitempty"`
+	IsCustomer bool `json:"IsCustomer,omitempty"`
 
 	// Default currency for raising Contacts against contact
-	DefaultCurrency string `json:"DefaultCurrency,omitempty" xml:"DefaultCurrency,omitempty"`
+	DefaultCurrency string `json:"DefaultCurrency,omitempty"`
 
 	// Store XeroNetworkKey for contacts.
-	XeroNetworkKey string `json:"XeroNetworkKey,omitempty" xml:"XeroNetworkKey,omitempty"`
+	XeroNetworkKey string `json:"XeroNetworkKey,omitempty"`
 
 	// The default sales account code for contacts
-	SalesDefaultAccountCode string `json:"SalesDefaultAccountCode,omitempty" xml:"SalesDefaultAccountCode,omitempty"`
+	SalesDefaultAccountCode string `json:"SalesDefaultAccountCode,omitempty"`
 
 	// The default purchases account code for contacts
-	PurchasesDefaultAccountCode string `json:"PurchasesDefaultAccountCode,omitempty" xml:"PurchasesDefaultAccountCode,omitempty"`
+	PurchasesDefaultAccountCode string `json:"PurchasesDefaultAccountCode,omitempty"`
 
 	// The default sales tracking categories for contacts
-	SalesTrackingCategories *[]TrackingCategory `json:"SalesTrackingCategories,omitempty" xml:"SalesTrackingCategories>SalesTrackingCategory,omitempty"`
+	SalesTrackingCategories *[]TrackingCategory `json:"SalesTrackingCategories,omitempty"`
 
 	// The default purchases tracking categories for contacts
-	PurchasesTrackingCategories *[]TrackingCategory `json:"PurchasesTrackingCategories,omitempty" xml:"PurchasesTrackingCategories>PurchaseTrackingCategory,omitempty"`
+	PurchasesTrackingCategories *[]TrackingCategory `json:"PurchasesTrackingCategories,omitempty"`
 
 	// The name of the Tracking Category assigned to the contact under SalesTrackingCategories and PurchasesTrackingCategories
-	TrackingCategoryName string `json:"TrackingCategoryName,omitempty" xml:"TrackingCategoryName,omitempty"`
+	TrackingCategoryName string `json:"TrackingCategoryName,omitempty"`
 
 	// The name of the Tracking Option assigned to the contact under SalesTrackingCategories and PurchasesTrackingCategories
-	TrackingCategoryOption string `json:"TrackingCategoryOption,omitempty" xml:"TrackingCategoryOption,omitempty"`
+	TrackingCategoryOption string `json:"TrackingCategoryOption,omitempty"`
 
 	// UTC timestamp of last update to contact
-	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty" xml:"-"`
+	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty"`
 
 	// Displays which contact groups a contact is included in
-	ContactGroups *[]ContactGroup `json:"ContactGroups,omitempty" xml:"ContactGroups>ContactGroup,omitempty"`
+	ContactGroups *[]ContactGroup `json:"ContactGroups,omitempty"`
 
 	// Website address for contact (read only)
-	Website string `json:"Website,omitempty" xml:"-"`
+	Website string `json:"Website,omitempty"`
 
 	// batch payment details for contact (read only)
-	BatchPayments BatchPayment `json:"BatchPayments,omitempty" xml:"-"`
+	BatchPayments BatchPayment `json:"BatchPayments,omitempty"`
 
 	// The default discount rate for the contact (read only)
-	Discount float64 `json:"Discount,omitempty" xml:"-"`
+	Discount float64 `json:"Discount,omitempty"`
 
 	// The raw AccountsReceivable(sales Contacts) and AccountsPayable(bills) outstanding and overdue amounts, not converted to base currency (read only)
-	Balances Balances `json:"Balances,omitempty" xml:"-"`
+	Balances Balances `json:"Balances,omitempty"`
 
 	// A boolean to indicate if a contact has an attachment
-	HasAttachments bool `json:"HasAttachments,omitempty" xml:"HasAttachments,omitempty"`
+	HasAttachments bool `json:"HasAttachments,omitempty"`
 }
 
 //Contacts contains a collection of Contacts
 type Contacts struct {
-	Contacts []Contact `json:"Contacts" xml:"Contact"`
+	Contacts []Contact `json:"Contacts"`
 }
 
 //Balances are the raw AccountsReceivable(sales invoices) and AccountsPayable(bills)
 //outstanding and overdue amounts, not converted to base currency
 type Balances struct {
-	AccountsReceivable Balance `json:"AccountsReceivable,omitempty" xml:"AccountsReceivable,omitempty"`
-	AccountsPayable    Balance `json:"AccountsPayable,omitempty" xml:"AccountsPayable,omitempty"`
+	AccountsReceivable Balance `json:"AccountsReceivable,omitempty"`
+	AccountsPayable    Balance `json:"AccountsPayable,omitempty"`
 }
 
 //Balance is the raw AccountsReceivable(sales invoices) and AccountsPayable(bills)
 //outstanding and overdue amounts, not converted to base currency
 type Balance struct {
-	Outstanding float64 `json:"Outstanding,omitempty" xml:"Outstanding,omitempty"`
-	Overdue     float64 `json:"Overdue,omitempty" xml:"Overdue,omitempty"`
+	Outstanding float64 `json:"Outstanding,omitempty"`
+	Overdue     float64 `json:"Overdue,omitempty"`
 }
 
 //The Xero API returns Dates based on the .Net JSON date format available at the time of development

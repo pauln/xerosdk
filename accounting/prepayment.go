@@ -4,55 +4,55 @@ package accounting
 type Prepayment struct {
 
 	// See Prepayment Types
-	Type string `json:"Type,omitempty" xml:"Type,omitempty"`
+	Type string `json:"Type,omitempty"`
 
 	// The date the prepayment is created YYYY-MM-DD
-	Date string `json:"DateString,omitempty" xml:"Date,omitempty"`
+	Date string `json:"DateString,omitempty"`
 
 	// See Contacts
-	Contact Contact `json:"Contact" xml:"Contact"`
+	Contact Contact `json:"Contact"`
 
 	// See Prepayment Status Codes
-	Status string `json:"Status,omitempty" xml:"Status,omitempty"`
+	Status string `json:"Status,omitempty"`
 
 	// See Prepayment Line Amount Types
-	LineAmountTypes string `json:"LineAmountTypes,omitempty" xml:"LineAmountTypes,omitempty"`
+	LineAmountTypes string `json:"LineAmountTypes,omitempty"`
 
 	// See Prepayment Line Items
-	LineItems []LineItem `json:"LineItems,omitempty" xml:"LineItems,omitempty"`
+	LineItems []LineItem `json:"LineItems,omitempty"`
 
 	// The subtotal of the prepayment excluding taxes
-	SubTotal float64 `json:"SubTotal,omitempty" xml:"SubTotal,omitempty"`
+	SubTotal float64 `json:"SubTotal,omitempty"`
 
 	// The total tax on the prepayment
-	TotalTax float64 `json:"TotalTax,omitempty" xml:"TotalTax,omitempty"`
+	TotalTax float64 `json:"TotalTax,omitempty"`
 
 	// The total of the prepayment(subtotal + total tax)
-	Total float64 `json:"Total,omitempty" xml:"Total,omitempty"`
+	Total float64 `json:"Total,omitempty"`
 
 	// UTC timestamp of last update to the prepayment
-	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty" xml:"UpdatedDateUTC,omitempty"`
+	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty"`
 
 	// Currency used for the prepayment
-	CurrencyCode string `json:"CurrencyCode,omitempty" xml:"CurrencyCode,omitempty"`
+	CurrencyCode string `json:"CurrencyCode,omitempty"`
 
 	// Xero generated unique identifier
-	PrepaymentID string `json:"PrepaymentID,omitempty" xml:"PrepaymentID,omitempty"`
+	PrepaymentID string `json:"PrepaymentID,omitempty"`
 
 	// The currency rate for a multicurrency prepayment. If no rate is specified, the XE.com day rate is used
-	CurrencyRate float64 `json:"CurrencyRate,omitempty" xml:"CurrencyRate,omitempty"`
+	CurrencyRate float64 `json:"CurrencyRate,omitempty"`
 
 	// The remaining credit balance on the prepayment
-	RemainingCredit float64 `json:"RemainingCredit,omitempty" xml:"RemainingCredit,omitempty"`
+	RemainingCredit float64 `json:"RemainingCredit,omitempty"`
 
 	// See Allocations
-	Allocations []Allocation `json:"Allocations,omitempty" xml:"Allocations,omitempty"`
+	Allocations []Allocation `json:"Allocations,omitempty"`
 
 	// boolean to indicate if a prepayment has an attachment
-	HasAttachments bool `json:"HasAttachments,omitempty" xml:"HasAttachments,omitempty"`
+	HasAttachments bool `json:"HasAttachments,omitempty"`
 }
 
 //Prepayments is a collection of Prepayments
 type Prepayments struct {
-	Prepayments []Prepayment `json:"Prepayments" xml:"Prepayment"`
+	Prepayments []Prepayment `json:"Prepayments"`
 }

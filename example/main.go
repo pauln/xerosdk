@@ -58,6 +58,9 @@ func main() {
 	r.HandleFunc("/accounts", XeroAccountsHandler)
 	r.HandleFunc("/bankTransactions", XeroBankTransactionsHandler)
 	r.HandleFunc("/bankTransfers", XeroBankTransfersHandler)
+	r.HandleFunc("/brandingThemes", XeroBrandingThemeHandler)
+	r.HandleFunc("/contactGroups", XeroContactGroupsHandler)
+	r.HandleFunc("/creditNotes", XeroCreditNotesHandler)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -396,5 +399,107 @@ func XeroBankTransfersHandler(w http.ResponseWriter, r *http.Request) {
 		BankTransfers []accounting.BankTransfer
 	}{
 		BankTransfers: bankTransfers,
+	})
+}
+
+// XeroBrandingThemeHandler handler will ask for all the branding themes linked
+// to the given user and print out in a template
+func XeroBrandingThemeHandler(w http.ResponseWriter, r *http.Request) {
+	brandingThemes := []accounting.BrandingTheme{}
+	se, _ := repo.GetSession(uuid.Nil)
+
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		themes, err := accounting.FindBrandingThemes(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}))
+		if err != nil {
+			log.Panic(err)
+		}
+		brandingThemes = append(brandingThemes, themes...)
+	}
+	t, _ := template.New("brandingThemes").Parse(brandingThemesTemplate)
+	t.Execute(w, struct {
+		BrandingThemes []accounting.BrandingTheme
+	}{
+		BrandingThemes: brandingThemes,
+	})
+}
+
+// XeroContactGroupsHandler handler will ask for all the contact groups linked
+// to the given user and print out in a template
+func XeroContactGroupsHandler(w http.ResponseWriter, r *http.Request) {
+	contactGroups := []accounting.ContactGroup{}
+	se, _ := repo.GetSession(uuid.Nil)
+
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		groups, err := accounting.FindContactGroups(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}))
+		if err != nil {
+			log.Panic(err)
+		}
+		contactGroups = append(contactGroups, groups.ContactGroups...)
+	}
+	t, _ := template.New("contactGroups").Parse(contactGroupsTemplate)
+	t.Execute(w, struct {
+		ContactGroups []accounting.ContactGroup
+	}{
+		ContactGroups: contactGroups,
+	})
+}
+
+// XeroCreditNotesHandler handler will ask for all the credit notes linked
+// to the given user and print out in a template
+func XeroCreditNotesHandler(w http.ResponseWriter, r *http.Request) {
+	creditNotes := []accounting.CreditNote{}
+	se, _ := repo.GetSession(uuid.Nil)
+
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		notes, err := accounting.FindCreditNotes(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}), nil)
+		if err != nil {
+			log.Panic(err)
+		}
+		creditNotes = append(creditNotes, notes.CreditNotes...)
+	}
+	t, _ := template.New("creditNotes").Parse(creditNotesTemplate)
+	t.Execute(w, struct {
+		CreditNotes []accounting.CreditNote
+	}{
+		CreditNotes: creditNotes,
 	})
 }

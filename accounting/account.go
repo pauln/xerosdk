@@ -17,63 +17,63 @@ const (
 type Account struct {
 
 	// Customer defined alpha numeric account code e.g 200 or SALES (max length = 10)
-	Code string `json:"Code,omitempty" xml:"Code,omitempty"`
+	Code string `json:"Code,omitempty"`
 
 	// Name of account (max length = 150)
-	Name string `json:"Name,omitempty" xml:"Name,omitempty"`
+	Name string `json:"Name,omitempty"`
 
 	// See Account Types
-	Type string `json:"Type,omitempty" xml:"Type,omitempty"`
+	Type string `json:"Type,omitempty"`
 
 	// For bank accounts only (Account Type BANK)
-	BankAccountNumber string `json:"BankAccountNumber,omitempty" xml:"BankAccountNumber,omitempty"`
+	BankAccountNumber string `json:"BankAccountNumber,omitempty"`
 
 	// Accounts with a status of ACTIVE can be updated to ARCHIVED. See Account Status Codes
-	Status string `json:"Status,omitempty" xml:"Status,omitempty"`
+	Status string `json:"Status,omitempty"`
 
 	// Description of the Account. Valid for all types of accounts except bank accounts (max length = 4000)
-	Description string `json:"Description,omitempty" xml:"Description,omitempty"`
+	Description string `json:"Description,omitempty"`
 
 	// For bank accounts only. See Bank Account types
-	BankAccountType string `json:"BankAccountType,omitempty" xml:"BankAccountType,omitempty"`
+	BankAccountType string `json:"BankAccountType,omitempty"`
 
 	// For bank accounts only
-	CurrencyCode string `json:"CurrencyCode,omitempty" xml:"CurrencyCode,omitempty"`
+	CurrencyCode string `json:"CurrencyCode,omitempty"`
 
 	// See Tax Types
-	TaxType string `json:"TaxType,omitempty" xml:"TaxType,omitempty"`
+	TaxType string `json:"TaxType,omitempty"`
 
 	// Boolean – describes whether account can have payments applied to it
-	EnablePaymentsToAccount bool `json:"EnablePaymentsToAccount,omitempty" xml:"EnablePaymentsToAccount,omitempty"`
+	EnablePaymentsToAccount bool `json:"EnablePaymentsToAccount,omitempty"`
 
 	// Boolean – describes whether account code is available for use with expense claims
-	ShowInExpenseClaims bool `json:"ShowInExpenseClaims,omitempty" xml:"ShowInExpenseClaims,omitempty"`
+	ShowInExpenseClaims bool `json:"ShowInExpenseClaims,omitempty"`
 
 	// The Xero identifier for an account – specified as a string following the endpoint name e.g. /297c2dc5-cc47-4afd-8ec8-74990b8761e9
-	AccountID string `json:"AccountID,omitempty" xml:"AccountID,omitempty"`
+	AccountID string `json:"AccountID,omitempty"`
 
 	// See Account Class Types
-	Class string `json:"Class,omitempty" xml:"-"`
+	Class string `json:"Class,omitempty"`
 
 	// If this is a system account then this element is returned. See System Account types. Note that non-system accounts may have this element set as either “” or null.
-	SystemAccount string `json:"SystemAccount,omitempty" xml:"-"`
+	SystemAccount string `json:"SystemAccount,omitempty"`
 
 	// Shown if set
-	ReportingCode string `json:"ReportingCode,omitempty" xml:"-"`
+	ReportingCode string `json:"ReportingCode,omitempty"`
 
 	// Shown if set
-	ReportingCodeName string `json:"ReportingCodeName,omitempty" xml:"-"`
+	ReportingCodeName string `json:"ReportingCodeName,omitempty"`
 
 	// boolean to indicate if an account has an attachment (read only)
-	HasAttachments bool `json:"HasAttachments,omitempty" xml:"-"`
+	HasAttachments bool `json:"HasAttachments,omitempty"`
 
 	// Last modified date UTC format
-	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty" xml:"-"`
+	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty"`
 }
 
 //Accounts contains a collection of Accounts
 type Accounts struct {
-	Accounts []Account `json:"Accounts,omitempty" xml:"Account,omitempty"`
+	Accounts []Account `json:"Accounts,omitempty"`
 }
 
 //The Xero API returns Dates based on the .Net JSON date format available at the time of development

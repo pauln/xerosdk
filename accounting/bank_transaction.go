@@ -17,69 +17,69 @@ const (
 type BankTransaction struct {
 
 	// See Bank Transaction Types
-	Type string `json:"Type" xml:"Type"`
+	Type string `json:"Type"`
 
 	// See Contacts
-	Contact Contact `json:"Contact" xml:"Contact"`
+	Contact Contact `json:"Contact"`
 
 	// See LineItems
-	LineItems []LineItem `json:"LineItems" xml:"LineItems>LineItem"`
+	LineItems []LineItem `json:"LineItems"`
 
 	// Boolean to show if transaction is reconciled
-	IsReconciled bool `json:"IsReconciled,omitempty" xml:"IsReconciled,omitempty"`
+	IsReconciled bool `json:"IsReconciled,omitempty"`
 
 	// Date of transaction – YYYY-MM-DD
-	Date string `json:"DateString,omitempty" xml:"Date,omitempty"`
+	Date string `json:"DateString,omitempty"`
 
 	// Reference for the transaction. Only supported for SPEND and RECEIVE transactions.
-	Reference string `json:"Reference,omitempty" xml:"Reference,omitempty"`
+	Reference string `json:"Reference,omitempty"`
 
 	// The currency that bank transaction has been raised in (see Currencies). Setting currency is only supported on overpayments.
-	CurrencyCode string `json:"CurrencyCode,omitempty" xml:"CurrencyCode,omitempty"`
+	CurrencyCode string `json:"CurrencyCode,omitempty"`
 
 	// Exchange rate to base currency when money is spent or received. e.g. 0.7500 Only used for bank transactions in non base currency. If this isn’t specified for non base currency accounts then either the user-defined rate (preference) or the XE.com day rate will be used. Setting currency is only supported on overpayments.
-	CurrencyRate float64 `json:"CurrencyRate,omitempty" xml:"CurrencyRate,omitempty"`
+	CurrencyRate float64 `json:"CurrencyRate,omitempty"`
 
 	// URL link to a source document – shown as “Go to App Name”
-	URL string `json:"Url,omitempty" xml:"Url,omitempty"`
+	URL string `json:"Url,omitempty"`
 
 	// See Bank Transaction Status Codes
-	Status string `json:"Status,omitempty" xml:"Status,omitempty"`
+	Status string `json:"Status,omitempty"`
 
 	// Line amounts are exclusive of tax by default if you don’t specify this element. See Line Amount Types
-	LineAmountTypes string `json:"LineAmountTypes,omitempty" xml:"LineAmountTypes,omitempty"`
+	LineAmountTypes string `json:"LineAmountTypes,omitempty"`
 
 	// Total of bank transaction excluding taxes
-	SubTotal float64 `json:"SubTotal,omitempty" xml:"SubTotal,omitempty"`
+	SubTotal float64 `json:"SubTotal,omitempty"`
 
 	// Total tax on bank transaction
-	TotalTax float64 `json:"TotalTax,omitempty" xml:"TotalTax,omitempty"`
+	TotalTax float64 `json:"TotalTax,omitempty"`
 
 	// Total of bank transaction tax inclusive
-	Total float64 `json:"Total,omitempty" xml:"Total,omitempty"`
+	Total float64 `json:"Total,omitempty"`
 
 	// Xero generated unique identifier for bank transaction
-	BankTransactionID string `json:"BankTransactionID,omitempty" xml:"BankTransactionID,omitempty"`
+	BankTransactionID string `json:"BankTransactionID,omitempty"`
 
 	// Xero Bank Account
-	BankAccount BankAccount `json:"BankAccount,omitempty" xml:"BankAccount,omitempty"`
+	BankAccount BankAccount `json:"BankAccount,omitempty"`
 
 	// Xero generated unique identifier for a Prepayment. This will be returned on BankTransactions with a Type of SPEND-PREPAYMENT or RECEIVE-PREPAYMENT
-	PrepaymentID string `json:"PrepaymentID,omitempty" xml:"-"`
+	PrepaymentID string `json:"PrepaymentID,omitempty"`
 
 	// Xero generated unique identifier for an Overpayment. This will be returned on BankTransactions with a Type of SPEND-OVERPAYMENT or RECEIVE-OVERPAYMENT
-	OverpaymentID string `json:"OverpaymentID,omitempty" xml:"-"`
+	OverpaymentID string `json:"OverpaymentID,omitempty"`
 
 	// Last modified date UTC format
-	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty" xml:"-"`
+	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty"`
 
 	// Boolean to indicate if a bank transaction has an attachment
-	HasAttachments bool `json:"HasAttachments,omitempty" xml:"-"`
+	HasAttachments bool `json:"HasAttachments,omitempty"`
 }
 
 //BankTransactions contains a collection of BankTransactions
 type BankTransactions struct {
-	BankTransactions []BankTransaction `json:"BankTransactions" xml:"BankTransaction"`
+	BankTransactions []BankTransaction `json:"BankTransactions"`
 }
 
 //The Xero API returns Dates based on the .Net JSON date format available at the time of development

@@ -4,58 +4,58 @@ package accounting
 type Overpayment struct {
 
 	// See Overpayment Types
-	Type string `json:"Type,omitempty" xml:"Type,omitempty"`
+	Type string `json:"Type,omitempty"`
 
 	// The date the overpayment is created YYYY-MM-DD
-	Date string `json:"DateString,omitempty" xml:"Date,omitempty"`
+	Date string `json:"DateString,omitempty"`
 
 	// See Contacts
-	Contact Contact `json:"Contact" xml:"Contact"`
+	Contact Contact `json:"Contact"`
 
 	// See Overpayment Status Codes
-	Status string `json:"Status,omitempty" xml:"Status,omitempty"`
+	Status string `json:"Status,omitempty"`
 
 	// See Overpayment Line Amount Types
-	LineAmountTypes string `json:"LineAmountTypes,omitempty" xml:"LineAmountTypes,omitempty"`
+	LineAmountTypes string `json:"LineAmountTypes,omitempty"`
 
 	// See Overpayment Line Items
-	LineItems []LineItem `json:"LineItems,omitempty" xml:"LineItems,omitempty"`
+	LineItems []LineItem `json:"LineItems,omitempty"`
 
 	// The subtotal of the overpayment excluding taxes
-	SubTotal float64 `json:"SubTotal,omitempty" xml:"SubTotal,omitempty"`
+	SubTotal float64 `json:"SubTotal,omitempty"`
 
 	// The total tax on the overpayment
-	TotalTax float64 `json:"TotalTax,omitempty" xml:"TotalTax,omitempty"`
+	TotalTax float64 `json:"TotalTax,omitempty"`
 
 	// The total of the overpayment (subtotal + total tax)
-	Total float64 `json:"Total,omitempty" xml:"Total,omitempty"`
+	Total float64 `json:"Total,omitempty"`
 
 	// UTC timestamp of last update to the overpayment
-	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty" xml:"UpdatedDateUTC,omitempty"`
+	UpdatedDateUTC string `json:"UpdatedDateUTC,omitempty"`
 
 	// Currency used for the overpayment
-	CurrencyCode string `json:"CurrencyCode,omitempty" xml:"CurrencyCode,omitempty"`
+	CurrencyCode string `json:"CurrencyCode,omitempty"`
 
 	// Xero generated unique identifier
-	OverpaymentID string `json:"OverpaymentID,omitempty" xml:"OverpaymentID,omitempty"`
+	OverpaymentID string `json:"OverpaymentID,omitempty"`
 
 	// The currency rate for a multicurrency overpayment. If no rate is specified, the XE.com day rate is used
-	CurrencyRate float64 `json:"CurrencyRate,omitempty" xml:"CurrencyRate,omitempty"`
+	CurrencyRate float64 `json:"CurrencyRate,omitempty"`
 
 	// The remaining credit balance on the overpayment
-	RemainingCredit float64 `json:"RemainingCredit,omitempty" xml:"RemainingCredit,omitempty"`
+	RemainingCredit float64 `json:"RemainingCredit,omitempty"`
 
 	// See Allocations
-	Allocations []Allocation `json:"Allocations,omitempty" xml:"Allocations,omitempty"`
+	Allocations []Allocation `json:"Allocations,omitempty"`
 
 	// See Payments
-	Payments []Payment `json:"Payments,omitempty" xml:"Payments,omitempty"`
+	Payments []Payment `json:"Payments,omitempty"`
 
 	// boolean to indicate if a overpayment has an attachment
-	HasAttachments bool `json:"HasAttachments,omitempty" xml:"HasAttachments,omitempty"`
+	HasAttachments bool `json:"HasAttachments,omitempty"`
 }
 
 //Overpayments is a collection of Overpayments
 type Overpayments struct {
-	Overpayments []Overpayment `json:"Overpayments" xml:"Overpayment"`
+	Overpayments []Overpayment `json:"Overpayments"`
 }
