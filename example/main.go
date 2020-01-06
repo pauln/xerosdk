@@ -56,6 +56,7 @@ func main() {
 	r.HandleFunc("/refresh", XeroRefreshTokenHandler)
 	r.HandleFunc("/organisations", XeroOrganisationsHandler)
 	r.HandleFunc("/accounts", XeroAccountsHandler)
+	r.HandleFunc("/bankTransactions", XeroBankTransactionsHandler)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -326,5 +327,39 @@ func XeroAccountsHandler(w http.ResponseWriter, r *http.Request) {
 		Accounts []accounting.Account
 	}{
 		Accounts: accounts,
+	})
+}
+
+// BankTransactionsHandler handler will ask for all the bank transactions linked to the given
+// user and print out in a template
+func XeroBankTransactionsHandler(w http.ResponseWriter, r *http.Request) {
+	bankTransactions := []accounting.BankTransaction{}
+	se, _ := repo.GetSession(uuid.Nil)
+
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		bankTr, err := accounting.FindBankTransactions(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}), nil)
+		if err != nil {
+			log.Panic(err)
+		}
+		bankTransactions = append(bankTransactions, bankTr.BankTransactions...)
+	}
+	t, _ := template.New("bankTransactions").Parse(bankTransactionsTemplate)
+	t.Execute(w, struct {
+		BankTransactions []accounting.BankTransaction
+	}{
+		BankTransactions: bankTransactions,
 	})
 }

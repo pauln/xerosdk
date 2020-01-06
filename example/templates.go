@@ -15,6 +15,7 @@ var connectedTemplate = `<p>AccessToken: {{.AccessToken}}</p>
 <p><a href="/invoices"/>Invoices</p>
 <p><a href="/organisations"/>Organisations</p>
 <p><a href="/accounts"/>Accounts</p>
+<p><a href="/bankTransactions"/>BankTransactions</p>
 <p><a href="/refresh"/>Refresh</p>`
 
 var contactsTemplate = `
@@ -62,5 +63,18 @@ var accountsTemplate = `
 	<p><-- EnablePaymentsToAccount:{{.EnablePaymentsToAccount}} | ShowInExpenseClaims:{{.ShowInExpenseClaims}} | AccountID:{{.AccountID}}/p>
 	<p><-- Class:{{.Class}} | SystemAccount:{{.SystemAccount}} | ReportingCode:{{.ReportingCode}}/p>
 	<p><-- ReportingCodeName:{{.ReportingCodeName}} | HasAttachments:{{.HasAttachments}} | UpdatedDateUTC:{{.UpdatedDateUTC}}/p>
+	<br>
+{{end}}
+`
+
+var bankTransactionsTemplate = `
+{{range .BankTransactions}}
+	<p>-- Type:{{.Type}} | Contact:{{.Contact}} | LineItems:{{.LineItems}}</p>
+	<p>-- IsReconciled:{{.IsReconciled}} | Date:{{.Date}} | Reference:{{.Reference}}</p>
+	<p>-- CurrencyCode:{{.CurrencyCode}} | CurrencyRate:{{.CurrencyRate}} | URL:{{.URL}}</p>
+	<p>-- Status:{{.Status}} | LineAmountTypes:{{.LineAmountTypes}} | SubTotal:{{.SubTotal}}</p>
+	<p>-- BankAccount:{{.BankAccount}} | PrepaymentID:{{.PrepaymentID}} | OverpaymentID:{{.OverpaymentID}}</p>
+	<p>-- UpdatedDateUTC:{{.UpdatedDateUTC}} | HasAttachments:{{.HasAttachments}}</p>
+	<br>
 {{end}}
 `
