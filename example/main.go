@@ -64,6 +64,7 @@ func main() {
 	r.HandleFunc("/currencies", XeroCurrencyHandler)
 	r.HandleFunc("/employees", XeroEmployeesHandler)
 	r.HandleFunc("/invoiceReminders", XeroInvoiceRemindersHandler)
+	r.HandleFunc("/invoiceItems", XeroInvoiceItemsHandler)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -606,5 +607,39 @@ func XeroInvoiceRemindersHandler(w http.ResponseWriter, r *http.Request) {
 		InvoiceReminders []accounting.InvoiceReminder
 	}{
 		InvoiceReminders: reminders,
+	})
+}
+
+// XeroInvoiceItemsHandler handler will ask for all the invoice items linked
+// to the given user and print out in a template
+func XeroInvoiceItemsHandler(w http.ResponseWriter, r *http.Request) {
+	items := []accounting.Item{}
+	se, _ := repo.GetSession(uuid.Nil)
+
+	tenants, err := connection.GetTenants(c.Client(&auth.Session{
+		Token:  se,
+		UserID: uuid.Nil,
+		Repo:   repo,
+	}))
+	if err != nil {
+		log.Panic(err)
+	}
+	for _, tenant := range tenants {
+		its, err := accounting.FindItems(c.Client(&auth.Session{
+			Token:    se,
+			UserID:   uuid.Nil,
+			TenantID: tenant.TenantID,
+			Repo:     repo,
+		}), nil, nil)
+		if err != nil {
+			log.Panic(err)
+		}
+		items = append(items, its.Items...)
+	}
+	t, _ := template.New("invoiceItems").Parse(invoiceItemsTemplate)
+	t.Execute(w, struct {
+		InvoiceItems []accounting.Item
+	}{
+		InvoiceItems: items,
 	})
 }

@@ -23,6 +23,7 @@ var connectedTemplate = `<p>AccessToken: {{.AccessToken}}</p>
 <p><a href="/currencies"/>Currencies</p>
 <p><a href="/employees"/>Employees</p>
 <p><a href="/invoiceReminders"/>InvoiceReminders</p>
+<p><a href="/invoiceItems"/>InvoiceItems</p>
 <p><a href="/refresh"/>Refresh</p>`
 
 var contactsTemplate = `
@@ -141,5 +142,15 @@ var employeesTemplate = `
 var invoiceRemindersTemplate = `
 {{range .InvoiceReminders}}
 	<p>--  <b>Enabled:</b>{{.Enabled}}</p>
+{{end}}
+`
+
+var invoiceItemsTemplate = `
+{{range .InvoiceItems}}
+	<p>--  <b>Code:</b>{{.Code}}  |  <b>InventoryAssetAccountCode:</b>{{.InventoryAssetAccountCode}}  |  <b>Name:</b>{{.Name}}</p>
+	<p>--  <b>IsSold:</b>{{.IsSold}}  |  <b>IsPurchased:</b>{{.IsPurchased}}  |  <b>Description:</b>{{.Description}}</p>
+	<p>--  <b>PurchaseDescription:</b>{{.PurchaseDescription}}  |  <b>PurchaseDetails:</b>{{.PurchaseDetails}}  |  <b>SalesDetails:</b>{{.SalesDetails}}</p>
+	<p>--  <b>IsTrackedAsInventory:</b>{{.IsTrackedAsInventory}}  |  <b>TotalCostPool:</b>{{.TotalCostPool}}  |  <b>QuantityOnHand:</b>{{.QuantityOnHand}}</p>
+	<p>--  <b>UpdatedDateUTC:</b>{{.UpdatedDateUTC}}  |  <b>ItemID:</b>{{.ItemID}}</p>
 {{end}}
 `
