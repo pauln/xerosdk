@@ -35,6 +35,9 @@ type LineItem struct {
 	// Percentage discount being applied to a line item (only supported on ACCREC invoices – ACC PAY invoices and credit notes in Xero do not support discounts
 	DiscountRate float64 `json:"DiscountRate,omitempty"`
 
+	// The discount amount being applied to a line item (only supported on ACCREC invoices – ACC PAY invoices and credit notes in Xero do not support discounts
+	DiscountAmount float64 `json:"DiscountAmount,omitempty"`
+
 	// The Xero identifier for a Repeating Invoicee.g. 297c2dc5-cc47-4afd-8ec8-74990b8761e9
 	RepeatingInvoiceID string `json:"RepeatingInvoiceID,omitempty"`
 }
