@@ -29,3 +29,12 @@ func GetTenants(cl *http.Client) (tenants []Tenant, err error) {
 	}
 	return tenants, nil
 }
+
+// DeleteTenant will remove the connection with the given tenantID
+func DeleteTenant(cl *http.Client, tenantID uuid.UUID) error {
+	_, err := helpers.Remove(cl, connectionsURL+"/"+tenantID.String())
+	if err != nil {
+		return err
+	}
+	return nil
+}
