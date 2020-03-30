@@ -14,6 +14,7 @@ const (
 
 // Tenant type will keep information about the Xero tenant
 type Tenant struct {
+	ID         uuid.UUID `json:"id,omitempty"`
 	TenantID   uuid.UUID `json:"tenantId,omitempty"`
 	TenantType string    `json:"tenantType,omitempty"`
 }
@@ -30,9 +31,9 @@ func GetTenants(cl *http.Client) (tenants []Tenant, err error) {
 	return tenants, nil
 }
 
-// DeleteTenant will remove the connection with the given tenantID
-func DeleteTenant(cl *http.Client, tenantID uuid.UUID) error {
-	_, err := helpers.Remove(cl, connectionsURL+"/"+tenantID.String())
+// DeleteTenant will remove the connection with the given connectionID
+func DeleteTenant(cl *http.Client, connectionID uuid.UUID) error {
+	_, err := helpers.Remove(cl, connectionsURL+"/"+connectionID.String())
 	if err != nil {
 		return err
 	}
