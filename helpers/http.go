@@ -71,7 +71,7 @@ func process(cl *http.Client, request *http.Request) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if response.StatusCode != http.StatusOK {
+	if response.StatusCode >= http.StatusBadRequest {
 		return nil, errors.New(string(responseBytes))
 	}
 	return responseBytes, nil
