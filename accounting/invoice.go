@@ -152,6 +152,16 @@ func FindInvoices(cl *http.Client) (*Invoices, error) {
 	return unmarshalInvoice(invoiceResponseBytes)
 }
 
+// FindInvoicesWithQuery function will return the list of all the invoices tied to this
+// tenantID matching the queryStringParameters
+func FindInvoicesWithQuery(cl *http.Client, querystringParameters map[string]string) (*Invoices, error) {
+	invoiceResponseBytes, err := helpers.Find(cl, invoiceURL, nil, querystringParameters)
+	if err != nil {
+		return nil, err
+	}
+	return unmarshalInvoice(invoiceResponseBytes)
+}
+
 // FindInvoice function will return the invoice with the given criteria
 func FindInvoice(cl *http.Client, invoiceID uuid.UUID) (*Invoice, error) {
 	invoiceResponseBytes, err := helpers.Find(cl, invoiceURL+"/"+invoiceID.String(), nil, nil)
