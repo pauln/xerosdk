@@ -1,4 +1,4 @@
-module github.com/quickaco/xerosdk
+module github.com/pauln/xerosdk
 
 go 1.13
 
